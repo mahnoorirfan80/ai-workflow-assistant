@@ -1,49 +1,51 @@
-# backend/app/utils/openrouter_agent.py
-
 import os
 from dotenv import load_dotenv
 from typing import Dict
 
-from langchain.agents import tool, AgentExecutor, create_tool_calling_agent
+from langchain.agents import AgentExecutor, create_tool_calling_agent
 from langchain.memory import ChatMessageHistory
 from langchain_core.chat_history import BaseChatMessageHistory
-from langchain_core.messages import AIMessage, HumanMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-from langchain_core.runnables import Runnable
 from langchain_core.runnables.history import RunnableWithMessageHistory
+from langchain_core.runnables import Runnable
 from langchain_openai import ChatOpenAI
 
-from app.utils.tools import get_current_datetime, simple_math, summarize_text
+from app.utils.tools import tools  # ✅ All tools imported from one place
 
-# Load environment variables
+# Load API key from .env
 load_dotenv()
 
 # === LLM Setup ===
 llm = ChatOpenAI(
-    model="openrouter/openai/gpt-3.5-turbo",
-    api_key=os.environ["OPENROUTER_API_KEY"],
-    base_url="https://openrouter.ai/api/v1",
+    model="gpt-4.1-mini",
+    openai_api_base="https://openrouter.ai/api/v1",
+    openai_api_key=os.getenv("OPENROUTER_API_KEY"),
+    temperature=0.7,
 )
 
-# === Tools Setup ===
-tools = [get_current_datetime, simple_math, summarize_text]
-
-# === Prompt Template ===
 prompt = ChatPromptTemplate.from_messages([
-    ("system", "You're a helpful AI assistant."),
+    ("system", 
+     "You're a helpful AI assistant. You have access to the following tools:\n"
+     "- get_current_datetime: Returns the current date and time.\n"
+     "- simple_math: Solves basic math expressions.\n"
+     "- summarize_text: Summarizes long pieces of text.\n"
+     "- scrape_website: Extracts and summarizes content from a given URL.\n"
+     "- save_to_notion: Saves text summaries or links into your Notion database.\n"
+     "- get_calendar_events: Fetches upcoming calendar events (real-time).\n"
+     "Use these tools only when needed and explain your reasoning."
+    ),
     MessagesPlaceholder(variable_name="chat_history"),
     ("user", "{input}"),
     MessagesPlaceholder(variable_name="agent_scratchpad"),
 ])
 
-# === Create Agent ===
+# === Agent with Tool Calling ===
 agent = create_tool_calling_agent(llm, tools, prompt)
 
-# === Agent Executor ===
+# === Agent Executor with Tool List ===
 agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
 
-# === Memory Store ===
-# Dictionary to keep per-session memory in memory
+# === In-Memory Session Store ===
 memory_store: Dict[str, ChatMessageHistory] = {}
 
 def get_session_history(session_id: str) -> BaseChatMessageHistory:
@@ -51,7 +53,7 @@ def get_session_history(session_id: str) -> BaseChatMessageHistory:
         memory_store[session_id] = ChatMessageHistory()
     return memory_store[session_id]
 
-# === Agent with Memory ===
+# === Runnable Agent with Memory ===
 agent_with_memory: Runnable = RunnableWithMessageHistory(
     agent_executor,
     get_session_history,
