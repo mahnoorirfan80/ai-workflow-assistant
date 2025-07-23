@@ -17,15 +17,23 @@ load_dotenv()
 
 # === LLM Setup ===
 llm = ChatOpenAI(
-    model="gpt-3.5-turbo",
+    model="gpt-4.1-mini",
     openai_api_base="https://openrouter.ai/api/v1",
     openai_api_key=os.getenv("OPENROUTER_API_KEY"),
     temperature=0.7,
 )
 
-# === Prompt Template ===
 prompt = ChatPromptTemplate.from_messages([
-    ("system", "You're a helpful AI assistant."),
+    ("system", 
+     "You're a helpful AI assistant. You have access to the following tools:\n"
+     "- get_current_datetime: Returns the current date and time.\n"
+     "- simple_math: Solves basic math expressions.\n"
+     "- summarize_text: Summarizes long pieces of text.\n"
+     "- scrape_website: Extracts and summarizes content from a given URL.\n"
+     "- save_to_notion: Saves text summaries or links into your Notion database.\n"
+     "- get_calendar_events: Fetches upcoming calendar events (real-time).\n"
+     "Use these tools only when needed and explain your reasoning."
+    ),
     MessagesPlaceholder(variable_name="chat_history"),
     ("user", "{input}"),
     MessagesPlaceholder(variable_name="agent_scratchpad"),
