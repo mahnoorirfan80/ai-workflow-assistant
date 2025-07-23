@@ -2,6 +2,9 @@ from datetime import datetime
 from langchain.tools import tool
 import requests
 from bs4 import BeautifulSoup
+from notion_client import Client
+import os
+
 
 @tool
 def get_current_datetime(dummy_input: str) -> str:
@@ -43,17 +46,51 @@ def scrape_website(url: str) -> str:
             tag.decompose()
 
         text = soup.get_text(separator=' ', strip=True)
-        return f"Website content from {url}:\n\n{text[:1000]}..."  # Limit for token safety
+        safe_limit = min(len(text), 8000)  # To avoid index errors
+        return f"Website content from {url}:\n\n{text[:safe_limit]}..."
+
     except Exception as e:
         return f"Failed to scrape website: {str(e)}"
 
+
 @tool
 def save_to_notion(text: str) -> str:
-    """Pretend to save a note to Notion (simulated)."""
-    # Real implementation would use Notion API
+    """Saves the provided text as a new page in Notion."""
     if len(text) < 10:
         return "Please provide more content to save."
-    return f"Saved to Notion: {text[:100]}..."
+
+    notion_token = os.getenv("NOTION_TOKEN")
+    database_id = os.getenv("NOTION_DATABASE_ID")
+    
+    if not notion_token or not database_id:
+        return "Notion credentials are missing."
+
+    notion = Client(auth=notion_token)
+
+    try:
+        response = notion.pages.create(
+            parent={"database_id": database_id},
+            properties={
+                "Name": {
+                    "title": [
+                        {"text": {"content": text[:30]}}
+                    ]
+                }
+            },
+            children=[
+                {
+                    "object": "block",
+                    "type": "paragraph",
+                    "paragraph": {
+                        "rich_text": [{"type": "text", "text": {"content": text}}]
+                    },
+                }
+            ]
+        )
+        return f"Text saved to Notion page: {response['url']}"
+    except Exception as e:
+        return f" Failed to save to Notion: {str(e)}"
+
 
 @tool
 def get_calendar_events(dummy_input: str) -> str:
