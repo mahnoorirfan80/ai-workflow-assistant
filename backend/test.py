@@ -1,35 +1,35 @@
-# backend/test_memory.py
-
 import requests
 
-API_URL = "http://127.0.0.1:8000/ask-agent/"
-SESSION_ID = "test-memory-001"
+URL = "http://127.0.0.1:8000/ask-agent/"
+session_id = "test-session-1"  # you can use any string as a session id
 
 def send_message(message):
-    response = requests.post(API_URL, json={
-        "input": message,
-        "session_id": SESSION_ID
-    })
-    return response.json()["response"]
+    response = requests.post(
+        URL,
+        json={"input": message, "session_id": session_id}
+    )
+    if response.status_code == 200:
+        return response.json()["response"]
+    else:
+        print(f"Error: {response.status_code} - {response.text}")
+        return None
 
-print("=== TESTING MEMORY ===")
-print("User: My name is Mahnoor.")
-reply1 = send_message("My name is Mahnoor.")
-print("Assistant:", reply1)
+print("=== TESTING MEMORY ===\n")
 
-print("\nUser: What is my name?")
-reply2 = send_message("What is my name?")
-print("Assistant:", reply2)
+messages = [
+    "My name is Mahnoor.",
+    "What is my name?",
+    "I am working on an AI assistant project.",
+    "Can you summarize our conversation so far?"
+    "I live in Lahore.",
+    "Where do I live?",
+    "I prefer working in the day.",
+    "What are my preferences?",
+    "Remind me what we discussed earlier."
+]
 
-print("\nUser: What did I tell you earlier?")
-reply3 = send_message("What did I tell you earlier?")
-print("Assistant:", reply3)
-
-print("\n=== STARTING A NEW SESSION ===")
-NEW_SESSION_ID = "test-memory-002"
-
-response_new = requests.post(API_URL, json={
-    "input": "What is my name?",
-    "session_id": NEW_SESSION_ID
-})
-print("New session assistant:", response_new.json()["response"])
+for msg in messages:
+    print(f"User: {msg}")
+    reply = send_message(msg)
+    if reply:
+        print(f"Agent: {reply['output']}\n")

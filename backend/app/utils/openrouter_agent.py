@@ -29,6 +29,7 @@ prompt = ChatPromptTemplate.from_messages([
      "- get_current_datetime: Returns the current date and time.\n"
      "- simple_math: Solves basic math expressions.\n"
      "- summarize_text: Summarizes long pieces of text.\n"
+     "- get_weather: Returns weather info for a city (dummy data).\n" 
      "- scrape_website: Extracts and summarizes content from a given URL.\n"
      "- save_to_notion: Saves text summaries or links into your Notion database.\n"
      "- get_calendar_events: Fetches upcoming calendar events (real-time).\n"
