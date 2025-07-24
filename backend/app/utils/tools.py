@@ -4,8 +4,12 @@ import requests
 from bs4 import BeautifulSoup
 from notion_client import Client
 import os
+<<<<<<< HEAD
 import json
 from langchain_core.tools import tool
+=======
+
+>>>>>>> 350ab73784d086f556c4ee794ba2375ffe8751d1
 
 @tool
 def get_current_datetime(dummy_input: str) -> str:
@@ -105,6 +109,7 @@ def get_calendar_events(dummy_input: str) -> str:
     )
 
 
+<<<<<<< HEAD
 @tool
 def clear_memory(session_id: str) -> str:
     """Clear the memory for a specific user session."""
@@ -116,6 +121,8 @@ def clear_memory(session_id: str) -> str:
     else:
         return f"No memory file found for session: {session_id}"
 
+=======
+>>>>>>> 350ab73784d086f556c4ee794ba2375ffe8751d1
 tools = [
     get_current_datetime,
     simple_math,
@@ -123,6 +130,10 @@ tools = [
     get_weather,
     scrape_website,
     save_to_notion,
+<<<<<<< HEAD
     get_calendar_events,
     clear_memory
+=======
+    get_calendar_events
+>>>>>>> 350ab73784d086f556c4ee794ba2375ffe8751d1
 ]

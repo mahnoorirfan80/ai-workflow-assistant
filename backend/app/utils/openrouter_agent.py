@@ -1,9 +1,15 @@
 import os
 from dotenv import load_dotenv
 from typing import Dict
+<<<<<<< HEAD
 from app.utils.persistent_memory import PersistentChatMessageHistory
 from langchain.agents import AgentExecutor, create_tool_calling_agent
 from langchain_community.chat_message_histories import ChatMessageHistory
+=======
+
+from langchain.agents import AgentExecutor, create_tool_calling_agent
+from langchain.memory import ChatMessageHistory
+>>>>>>> 350ab73784d086f556c4ee794ba2375ffe8751d1
 from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables.history import RunnableWithMessageHistory
@@ -11,6 +17,11 @@ from langchain_core.runnables import Runnable
 from langchain_openai import ChatOpenAI
 from app.utils.tools import tools  # ✅ All tools imported from one place
 
+<<<<<<< HEAD
+=======
+from app.utils.tools import tools  # ✅ All tools imported from one place
+
+>>>>>>> 350ab73784d086f556c4ee794ba2375ffe8751d1
 # Load API key from .env
 load_dotenv()
 
@@ -28,7 +39,10 @@ prompt = ChatPromptTemplate.from_messages([
      "- get_current_datetime: Returns the current date and time.\n"
      "- simple_math: Solves basic math expressions.\n"
      "- summarize_text: Summarizes long pieces of text.\n"
+<<<<<<< HEAD
      "- get_weather: Returns weather info for a city (dummy data).\n" 
+=======
+>>>>>>> 350ab73784d086f556c4ee794ba2375ffe8751d1
      "- scrape_website: Extracts and summarizes content from a given URL.\n"
      "- save_to_notion: Saves text summaries or links into your Notion database.\n"
      "- get_calendar_events: Fetches upcoming calendar events (real-time).\n"
@@ -45,6 +59,11 @@ agent = create_tool_calling_agent(llm, tools, prompt)
 # === Agent Executor with Tool List ===
 agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
 
+<<<<<<< HEAD
+=======
+# === In-Memory Session Store ===
+memory_store: Dict[str, ChatMessageHistory] = {}
+>>>>>>> 350ab73784d086f556c4ee794ba2375ffe8751d1
 
 def get_session_history(session_id: str) -> BaseChatMessageHistory:
     return PersistentChatMessageHistory(session_id=session_id)
