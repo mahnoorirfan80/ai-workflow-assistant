@@ -1,6 +1,9 @@
 import os
 from dotenv import load_dotenv
 from typing import Dict
+from app.utils.persistent_memory import PersistentChatMessageHistory
+from langchain.agents import AgentExecutor, create_tool_calling_agent
+from langchain_community.chat_message_histories import ChatMessageHistory
 
 from langchain.agents import AgentExecutor, create_tool_calling_agent
 from langchain.memory import ChatMessageHistory
@@ -9,6 +12,7 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_core.runnables import Runnable
 from langchain_openai import ChatOpenAI
+from app.utils.tools import tools  # ✅ All tools imported from one place
 
 from app.utils.tools import tools  # ✅ All tools imported from one place
 
@@ -29,6 +33,7 @@ prompt = ChatPromptTemplate.from_messages([
      "- get_current_datetime: Returns the current date and time.\n"
      "- simple_math: Solves basic math expressions.\n"
      "- summarize_text: Summarizes long pieces of text.\n"
+     "- get_weather: Returns weather info for a city (dummy data).\n" 
      "- scrape_website: Extracts and summarizes content from a given URL.\n"
      "- save_to_notion: Saves text summaries or links into your Notion database.\n"
      "- get_calendar_events: Fetches upcoming calendar events (real-time).\n"
@@ -49,9 +54,7 @@ agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
 memory_store: Dict[str, ChatMessageHistory] = {}
 
 def get_session_history(session_id: str) -> BaseChatMessageHistory:
-    if session_id not in memory_store:
-        memory_store[session_id] = ChatMessageHistory()
-    return memory_store[session_id]
+    return PersistentChatMessageHistory(session_id=session_id)
 
 # === Runnable Agent with Memory ===
 agent_with_memory: Runnable = RunnableWithMessageHistory(

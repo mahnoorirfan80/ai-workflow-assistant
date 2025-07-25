@@ -4,6 +4,8 @@ import requests
 from bs4 import BeautifulSoup
 from notion_client import Client
 import os
+import json
+from langchain_core.tools import tool
 
 
 @tool
@@ -104,12 +106,25 @@ def get_calendar_events(dummy_input: str) -> str:
     )
 
 
-tools = [
+@tool
+def clear_memory(session_id: str) -> str:
+    """Clear the memory for a specific user session."""
+    file_path = os.path.join("memory_store", f"{session_id}.json")
+    if os.path.exists(file_path):
+        with open(file_path, "w") as f:
+            json.dump([], f, indent=2)
+        return f"Memory cleared for session: {session_id}"
+    else:
+        return f"No memory file found for session: {session_id}"
+
+tools =[
     get_current_datetime,
     simple_math,
     summarize_text,
     get_weather,
     scrape_website,
     save_to_notion,
+    get_calendar_events,
+    clear_memory
     get_calendar_events
 ]

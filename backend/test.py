@@ -1,35 +1,24 @@
-# backend/test_memory.py
+from app.utils.openrouter_agent import agent_with_memory
 
-import requests
+# Simulate unique session ID (creates: memory_store/test_user_1.json)
+session_id = "test_user_1"
 
-API_URL = "http://127.0.0.1:8000/ask-agent/"
-SESSION_ID = "test-memory-001"
+def send_message(message: str):
+    return agent_with_memory.invoke(
+        {"input": message},
+        config={"configurable": {"session_id": session_id}}  # ✅ REQUIRED!
+    )
 
-def send_message(message):
-    response = requests.post(API_URL, json={
-        "input": message,
-        "session_id": SESSION_ID
-    })
-    return response.json()["response"]
+print("=== TESTING PERSISTENT MEMORY ===")
 
-print("=== TESTING MEMORY ===")
-print("User: My name is Mahnoor.")
 reply1 = send_message("My name is Mahnoor.")
-print("Assistant:", reply1)
+print("User: My name is Mahnoor.")
+print("Agent:", reply1["output"])
 
-print("\nUser: What is my name?")
 reply2 = send_message("What is my name?")
-print("Assistant:", reply2)
+print("\nUser: What is my name?")
+print("Agent:", reply2["output"])
 
-print("\nUser: What did I tell you earlier?")
-reply3 = send_message("What did I tell you earlier?")
-print("Assistant:", reply3)
-
-print("\n=== STARTING A NEW SESSION ===")
-NEW_SESSION_ID = "test-memory-002"
-
-response_new = requests.post(API_URL, json={
-    "input": "What is my name?",
-    "session_id": NEW_SESSION_ID
-})
-print("New session assistant:", response_new.json()["response"])
+reply3 = send_message("What tools can you use?")
+print("\nUser: What tools can you use?")
+print("Agent:", reply3["output"])
