@@ -16,6 +16,13 @@ from langchain_core.tools import tool
 from langchain_openai import ChatOpenAI 
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import Runnable
+from app.state.file_state import file_state 
+from typing import Optional
+from langchain_core.runnables import RunnableConfig
+from app.state.file_state import resume_store
+
+from dotenv import load_dotenv
+load_dotenv()
 
 @tool
 def get_current_datetime(dummy_input: str) -> str:
@@ -115,67 +122,63 @@ def clear_memory(session_id: str) -> str:
         return f"No memory file found for session: {session_id}"
     
 
+
 @tool
-def parse_resume(file_path: str) -> dict:
-    """Parses a resume PDF file and extracts name, email, phone, skills, education, and experience."""
+def parse_resume(session_id: str) -> dict:
+    """Parse and summarize the uploaded resume based on session_id."""
+    try:
+        if session_id not in resume_store:
+            return {"error": "Missing session_id or resume not uploaded."}
 
-    name, email, phone = "", "", ""
-    skills, education, experience = [], [], []
+        resume_text = resume_store[session_id]
 
-    with pdfplumber.open(file_path) as pdf:
-        full_text = ""
-        for page in pdf.pages:
-            full_text += page.extract_text() + "\n"
+        # Simulate summary
+        summary = f"Resume Summary for session {session_id}:\n" + resume_text[:300]
 
-    # Basic info
-# Basic info
-    name_match = re.search(r'(?i)Name[:\s]*([A-Z][a-z]+\s[A-Z][a-z]+)', full_text)
-    email_match = re.search(r'[\w\.-]+@[\w\.-]+', full_text)
-    phone_match = re.search(r'\+?\d[\d\s\-]{9,}', full_text)
+        # Extract fields
+        name_match = re.search(r'(?i)Name[:\s]*([A-Z][a-z]+\s[A-Z][a-z]+)', resume_text)
+        email_match = re.search(r'[\w\.-]+@[\w\.-]+', resume_text)
+        phone_match = re.search(r'\+?\d[\d\s\-]{9,}', resume_text)
 
-    name = name_match.group(1) if name_match else None
-    email = email_match.group() if email_match else None
-    phone = phone_match.group() if phone_match else None
+        name = name_match.group(1) if name_match else None
+        email = email_match.group() if email_match else None
+        phone = phone_match.group() if phone_match else None
 
+        # Extract sections
+        skills, education, experience = [], [], []
+        current_section = None
 
-    if name_match:
-        name = name_match.group()
-    if email_match:
-        email = email_match.group()
-    if phone_match:
-        phone = phone_match.group()
+        for line in resume_text.splitlines():
+            line = line.strip()
+            if re.search(r'(?i)^skills?', line):
+                current_section = "skills"
+                continue
+            elif re.search(r'(?i)^education', line):
+                current_section = "education"
+                continue
+            elif re.search(r'(?i)^experience', line):
+                current_section = "experience"
+                continue
 
-    # Section parsing (improve keywords + logic)
-    current_section = None
-    for line in full_text.split("\n"):
-        line = line.strip()
+            if current_section == "skills":
+                skills.append(line)
+            elif current_section == "education":
+                education.append(line)
+            elif current_section == "experience":
+                experience.append(line)
 
-        if re.search(r'(?i)^skills?', line):
-            current_section = "skills"
-            continue
-        elif re.search(r'(?i)^education', line):
-            current_section = "education"
-            continue
-        elif re.search(r'(?i)^experience', line):
-            current_section = "experience"
-            continue
+        return {
+            "summary": summary,
+            "name": name,
+            "email": email,
+            "phone": phone,
+            "skills": [s for s in skills if s],
+            "education": [e for e in education if e],
+            "experience": [x for x in experience if x],
+        }
 
-        if current_section == "skills":
-            skills.append(line)
-        elif current_section == "education":
-            education.append(line)
-        elif current_section == "experience":
-            experience.append(line)
-
-    return {
-        "name": name,
-        "email": email,
-        "phone": phone,
-        "skills": [s for s in skills if s],
-        "education": [e for e in education if e],
-        "experience": [x for x in experience if x],
-    }
-
+    except Exception as e:
+        return {"error": str(e)}
 
 
 SCOPES = ['https://www.googleapis.com/auth/documents', 'https://www.googleapis.com/auth/drive.file']
@@ -221,28 +224,40 @@ def save_to_google_docs(content: str) -> str:
 
 
 @tool
-def handle_resume_workflow(file_path: str) -> str:
+def handle_resume_workflow(session_id: str) -> str:
     """
-    Complete resume workflow: Parse → Summarize → Save to Google Docs.
-    Returns structured JSON with links and status.
+    Parses the resume uploaded in the current session, summarizes the extracted content, 
+    and saves the summary to a Google Docs document.
+
+    Args:
+        session_id (str): Unique identifier for the user's session, used to retrieve the uploaded resume.
+
+    Returns:
+        str: A JSON-formatted string containing:
+            - parsed: Extracted key-value data from the resume.
+            - summary: A summarized version of the parsed resume.
+            - google_docs_link: Link to the saved Google Docs document.
+            - status: 'saved' if successful, or error details if failed.
     """
     try:
-        # Step 1: Parse resume
-        parsed_data = parse_resume(file_path)
+        file_path = file_state.get_last_file(session_id)
+        if not file_path or not os.path.exists(file_path):
+            return json.dumps({
+                "status": "failed",
+                "error": "No resume uploaded for this session."
+            })
+
+        parsed_data = parse_resume(session_id)
         if not parsed_data:
             return json.dumps({
                 "status": "failed",
                 "error": "Failed to parse resume."
             })
 
-        # Step 2: Summarize parsed content
         full_text = json.dumps(parsed_data, indent=2)
         summary = summarize_text(full_text)
-
-        # Step 3: Save summary to Google Docs
         doc_link = save_to_google_docs(summary)
 
-        # Step 4: Return structured response
         result = {
             "parsed": parsed_data,
             "summary": summary,
@@ -259,6 +274,15 @@ def handle_resume_workflow(file_path: str) -> str:
         })
 
 
+
+@tool
+def scrape_and_summarize(url: str):
+    """Scrape the given URL and return a summarized version of its content."""
+    html = scrape_website(url)
+    summary = summarize_text(html)
+    return summary
+
+
 tools =[
     get_current_datetime,
     simple_math,
@@ -270,5 +294,6 @@ tools =[
     get_calendar_events,
     parse_resume,
     save_to_google_docs,
-    handle_resume_workflow
+    handle_resume_workflow,
+    scrape_and_summarize
 ]

@@ -1,0 +1,29 @@
+[
+  {
+    "type": "human",
+    "data": {
+      "content": "summarize the pdf resume uploaded",
+      "additional_kwargs": {},
+      "response_metadata": {},
+      "type": "human",
+      "name": null,
+      "id": null,
+      "example": false
+    }
+  },
+  {
+    "type": "ai",
+    "data": {
+      "content": "It seems there was an issue because the session ID was missing or no resume was uploaded. Please ensure you have uploaded a resume, and try again. If you need assistance with uploading, feel free to ask!",
+      "additional_kwargs": {},
+      "response_metadata": {},
+      "type": "ai",
+      "name": null,
+      "id": null,
+      "example": false,
+      "tool_calls": [],
+      "invalid_tool_calls": [],
+      "usage_metadata": null
+    }
+  }
+]

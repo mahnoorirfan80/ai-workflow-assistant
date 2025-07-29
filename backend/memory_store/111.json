@@ -1,0 +1,29 @@
+[
+  {
+    "type": "human",
+    "data": {
+      "content": "summarize my uploaded resume",
+      "additional_kwargs": {},
+      "response_metadata": {},
+      "type": "human",
+      "name": null,
+      "id": null,
+      "example": false
+    }
+  },
+  {
+    "type": "ai",
+    "data": {
+      "content": "It seems I need a session ID to access your uploaded resume. Could you please provide the session ID for your current user session? If you're not sure where to find it, it might be located in a URL or provided to you by the platform you're using.",
+      "additional_kwargs": {},
+      "response_metadata": {},
+      "type": "ai",
+      "name": null,
+      "id": null,
+      "example": false,
+      "tool_calls": [],
+      "invalid_tool_calls": [],
+      "usage_metadata": null
+    }
+  }
+]

@@ -4,13 +4,15 @@ from typing import Dict
 from app.utils.persistent_memory import PersistentChatMessageHistory
 from langchain.agents import AgentExecutor, create_tool_calling_agent
 from langchain_community.chat_message_histories import ChatMessageHistory
-#from langchain.memory import ChatMessageHistory
 from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_core.runnables import Runnable
 from langchain_openai import ChatOpenAI
 from app.utils.tools import tools  
+from app.state.file_state import file_state 
+from app.state.file_state import resume_store
+
 
 
 # Load API key from .env
@@ -71,3 +73,4 @@ agent_with_memory: Runnable = RunnableWithMessageHistory(
     input_messages_key="input",
     history_messages_key="chat_history",
 )
+

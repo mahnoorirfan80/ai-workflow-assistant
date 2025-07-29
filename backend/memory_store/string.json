@@ -1,0 +1,56 @@
+[
+  {
+    "type": "human",
+    "data": {
+      "content": "summarize the pdf resume",
+      "additional_kwargs": {},
+      "response_metadata": {},
+      "type": "human",
+      "name": null,
+      "id": null,
+      "example": false
+    }
+  },
+  {
+    "type": "ai",
+    "data": {
+      "content": "It seems there was an issue with accessing the resume file. To proceed, please make sure the resume PDF is uploaded correctly, and provide me with the session ID associated with your user session so I can access the file. If you need help uploading the file or finding the session ID, please let me know!",
+      "additional_kwargs": {},
+      "response_metadata": {},
+      "type": "ai",
+      "name": null,
+      "id": null,
+      "example": false,
+      "tool_calls": [],
+      "invalid_tool_calls": [],
+      "usage_metadata": null
+    }
+  },
+  {
+    "type": "human",
+    "data": {
+      "content": "summarize my pdf resume",
+      "additional_kwargs": {},
+      "response_metadata": {},
+      "type": "human",
+      "name": null,
+      "id": null,
+      "example": false
+    }
+  },
+  {
+    "type": "ai",
+    "data": {
+      "content": "I will need the session ID associated with your user session to access and summarize your PDF resume. Please provide the session ID so I can proceed with summarizing the content of your resume. If you need help finding the session ID or uploading the file, feel free to ask for assistance.",
+      "additional_kwargs": {},
+      "response_metadata": {},
+      "type": "ai",
+      "name": null,
+      "id": null,
+      "example": false,
+      "tool_calls": [],
+      "invalid_tool_calls": [],
+      "usage_metadata": null
+    }
+  }
+]
