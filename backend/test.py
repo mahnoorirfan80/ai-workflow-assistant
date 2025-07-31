@@ -1,35 +1,21 @@
-import requests
+# test.py (in backend/)
+import os
+from dotenv import load_dotenv
 
-URL = "http://127.0.0.1:8000/ask-agent/"
-session_id = "test-session-1"  # you can use any string as a session id
+# ✅ Load the .env file from the backend folder
+load_dotenv()
 
-def send_message(message):
-    response = requests.post(
-        URL,
-        json={"input": message, "session_id": session_id}
-    )
-    if response.status_code == 200:
-        return response.json()["response"]
-    else:
-        print(f"Error: {response.status_code} - {response.text}")
-        return None
+# ✅ Check if the API key and base URL loaded
+assert os.getenv("OPENAI_API_KEY"), "OPENAI_API_KEY not found"
+assert os.getenv("OPENAI_BASE_URL"), "OPENAI_BASE_URL not found"
 
-print("=== TESTING MEMORY ===\n")
+# ✅ Now import the resume workflow function
+from app.utils.tools import handle_resume_workflow
 
-messages = [
-    "My name is Mahnoor.",
-    "What is my name?",
-    "I am working on an AI assistant project.",
-    "Can you summarize our conversation so far?"
-    "I live in Lahore.",
-    "Where do I live?",
-    "I prefer working in the day.",
-    "What are my preferences?",
-    "Remind me what we discussed earlier."
-]
+# ✅ Set the path to a real PDF resume
+file_path = "test_files/resume.pdf"  # Make sure this file exists
 
-for msg in messages:
-    print(f"User: {msg}")
-    reply = send_message(msg)
-    if reply:
-        print(f"Agent: {reply['output']}\n")
+# ✅ Call the workflow and print output
+result = handle_resume_workflow(file_path)
+print(result)
+print("KEY:", os.getenv("OPENAI_API_KEY"))  # Debug print

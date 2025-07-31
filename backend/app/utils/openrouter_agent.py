@@ -4,28 +4,37 @@ from typing import Dict
 from app.utils.persistent_memory import PersistentChatMessageHistory
 from langchain.agents import AgentExecutor, create_tool_calling_agent
 from langchain_community.chat_message_histories import ChatMessageHistory
-
-from langchain.agents import AgentExecutor, create_tool_calling_agent
-from langchain.memory import ChatMessageHistory
 from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_core.runnables import Runnable
 from langchain_openai import ChatOpenAI
-from app.utils.tools import tools  # ✅ All tools imported from one place
+from app.utils.tools import tools  
+from app.state.file_state import file_state 
+from app.state.file_state import resume_store
 
-from app.utils.tools import tools  # ✅ All tools imported from one place
+
 
 # Load API key from .env
 load_dotenv()
+print("🔑 OPENAI_API_KEY loaded:", os.getenv("OPENAI_API_KEY"))
 
 # === LLM Setup ===
+# llm = ChatOpenAI(
+#     model="gpt-4.1-mini",
+#     openai_api_base="https://openrouter.ai/api/v1",
+#     openai_api_key=os.getenv("OPENROUTER_API_KEY"),
+#     temperature=0.7,
+# )
+
+
 llm = ChatOpenAI(
-    model="gpt-4.1-mini",
+    model="gpt-4-turbo",  # ✅ Update this line
+    openai_api_key=os.getenv("OPENAI_API_KEY"),
     openai_api_base="https://openrouter.ai/api/v1",
-    openai_api_key=os.getenv("OPENROUTER_API_KEY"),
     temperature=0.7,
 )
+
 
 prompt = ChatPromptTemplate.from_messages([
     ("system", 
@@ -37,6 +46,7 @@ prompt = ChatPromptTemplate.from_messages([
      "- scrape_website: Extracts and summarizes content from a given URL.\n"
      "- save_to_notion: Saves text summaries or links into your Notion database.\n"
      "- get_calendar_events: Fetches upcoming calendar events (real-time).\n"
+     "- parse_resume: Extracts name, email, phone, skills, education, and experience from a resume PDF already located in the test_files folder (no need to upload).\n"
      "Use these tools only when needed and explain your reasoning."
     ),
     MessagesPlaceholder(variable_name="chat_history"),
@@ -63,3 +73,4 @@ agent_with_memory: Runnable = RunnableWithMessageHistory(
     input_messages_key="input",
     history_messages_key="chat_history",
 )
+
