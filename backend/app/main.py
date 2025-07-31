@@ -19,7 +19,6 @@ load_dotenv()
 
 app = FastAPI()
 
-# ✅ ADD THIS BLOCK
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"], 
@@ -39,11 +38,11 @@ async def ask_agent(query: Query):
             {"input": query.input},  
             config={"configurable": {"session_id": query.session_id}} 
         )
-        print("🧠 Agent output:", response["output"])
+        print("Agent output:", response["output"])
 
-        return {"output": response["output"]}  # 👈 Only return the output text
+        return {"output": response["output"]} 
     except Exception as e:
-        print("❌ Full traceback:")
+        print("Full traceback:")
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -51,7 +50,6 @@ async def ask_agent(query: Query):
 
 UPLOAD_DIR = "backend/test_files"
 def extract_text_from_pdf_bytes(pdf_bytes: bytes) -> str:
-    # Dummy parser (replace with real logic if needed)
     return "Parsed resume content"
 
 @app.post("/upload-resume/")
