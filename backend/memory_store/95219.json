@@ -1,0 +1,29 @@
+[
+  {
+    "type": "human",
+    "data": {
+      "content": "Generate a professional email using these bullet points:\n\n.email to professor\n.formal tone\n.request to grant sick leave\n\nPlease create a well-structured, formal email with appropriate greeting, body, and closing.",
+      "additional_kwargs": {},
+      "response_metadata": {},
+      "type": "human",
+      "name": null,
+      "id": null,
+      "example": false
+    }
+  },
+  {
+    "type": "ai",
+    "data": {
+      "content": "Subject: Request for Sick Leave\n\nDear Professor [Last Name],\n\nI hope this message finds you well. I am writing to inform you that due to unforeseen health issues, I find myself unable to attend class for the next few days. Consequently, I kindly request a leave of absence from [specific date] to [specific date].\n\nDuring this period, I will ensure to stay updated with the class assignments and lectures. I would appreciate any additional resources or recordings of the classes I will miss to aid in my studies.\n\nThank you for your understanding and support during this time. Please let me know if there are any forms or procedures I should complete on my end.\n\nLooking forward to your kind consideration.\n\nWarm regards,\n\n[Your Full Name]\n[Your University ID, if applicable]\n[Your Contact Information]",
+      "additional_kwargs": {},
+      "response_metadata": {},
+      "type": "ai",
+      "name": null,
+      "id": null,
+      "example": false,
+      "tool_calls": [],
+      "invalid_tool_calls": [],
+      "usage_metadata": null
+    }
+  }
+]

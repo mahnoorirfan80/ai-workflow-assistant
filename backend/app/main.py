@@ -11,11 +11,22 @@ from io import BytesIO
 from pdfminer.high_level import extract_text
 import random
 import string
+from fastapi.responses import RedirectResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 from dotenv import load_dotenv
 load_dotenv()
 
 app = FastAPI()
+
+# ✅ ADD THIS BLOCK
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], 
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class Query(BaseModel):
     input: str
@@ -28,11 +39,14 @@ async def ask_agent(query: Query):
             {"input": query.input},  
             config={"configurable": {"session_id": query.session_id}} 
         )
-        return {"response": response}
+        print("🧠 Agent output:", response["output"])
+
+        return {"output": response["output"]}  # 👈 Only return the output text
     except Exception as e:
         print("❌ Full traceback:")
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
+
 
 
 UPLOAD_DIR = "backend/test_files"
@@ -59,3 +73,10 @@ async def upload_resume(
 def get_resume_history(session_id: str):
     files = file_state.get_all_files(session_id)
     return {"session_id": session_id, "uploaded_files": files}
+
+
+@app.get("/")
+async def root():
+    return RedirectResponse(url="/docs")
+
+
