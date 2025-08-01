@@ -1,0 +1,29 @@
+[
+  {
+    "type": "human",
+    "data": {
+      "content": "summarize the resume",
+      "additional_kwargs": {},
+      "response_metadata": {},
+      "type": "human",
+      "name": null,
+      "id": null,
+      "example": false
+    }
+  },
+  {
+    "type": "ai",
+    "data": {
+      "content": "To proceed with summarizing the resume, I'll need to first parse and analyze the content of the resume that you've provided. Could you please upload the resume file? Once uploaded, I can extract the relevant details and provide a summary for you.",
+      "additional_kwargs": {},
+      "response_metadata": {},
+      "type": "ai",
+      "name": null,
+      "id": null,
+      "example": false,
+      "tool_calls": [],
+      "invalid_tool_calls": [],
+      "usage_metadata": null
+    }
+  }
+]

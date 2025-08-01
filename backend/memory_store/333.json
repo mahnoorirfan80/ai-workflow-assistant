@@ -1,0 +1,29 @@
+[
+  {
+    "type": "human",
+    "data": {
+      "content": "summarize my uploaded resume",
+      "additional_kwargs": {},
+      "response_metadata": {},
+      "type": "human",
+      "name": null,
+      "id": null,
+      "example": false
+    }
+  },
+  {
+    "type": "ai",
+    "data": {
+      "content": "It seems there was an error processing your request because no resume file was detected. Please make sure you have uploaded your resume correctly and try again. If you need further assistance, feel free to ask!",
+      "additional_kwargs": {},
+      "response_metadata": {},
+      "type": "ai",
+      "name": null,
+      "id": null,
+      "example": false,
+      "tool_calls": [],
+      "invalid_tool_calls": [],
+      "usage_metadata": null
+    }
+  }
+]

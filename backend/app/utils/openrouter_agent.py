@@ -14,6 +14,7 @@ from app.state.file_state import file_state
 from app.state.file_state import resume_store
 
 
+
 # Load API key from .env
 load_dotenv()
 print("🔑 OPENAI_API_KEY loaded:", os.getenv("OPENAI_API_KEY"))

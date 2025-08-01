@@ -16,6 +16,10 @@ from dotenv import load_dotenv
 from app.utils.tools import save_to_google_docs
 import random, string, traceback
 
+import random
+import string
+
+from dotenv import load_dotenv
 load_dotenv()
 
 app = FastAPI()
@@ -61,6 +65,10 @@ def extract_text_from_pdf_bytes(pdf_bytes: bytes) -> str:
 UPLOAD_DIR = "backend/test_files"
 
 
+UPLOAD_DIR = "backend/test_files"
+def extract_text_from_pdf_bytes(pdf_bytes: bytes) -> str:
+    # Dummy parser (replace with real logic if needed)
+    return "Parsed resume content"
 
 @app.post("/upload-resume/")
 async def upload_resume(
@@ -107,6 +115,13 @@ async def upload_resume(
         print("Error during summarization or saving to Docs:")
         traceback.print_exc()
         raise HTTPException(status_code=500, detail="Failed to summarize or save resume.")
+        session_id = ''.join(random.choices(string.digits, k=3))
+
+        contents = await file.read()
+        text = extract_text_from_pdf_bytes(contents)
+        resume_store[session_id] = text
+
+        return {"message": "Resume uploaded successfully.", "session_id": session_id}
 
 
 @app.get("/resume-history/{session_id}")

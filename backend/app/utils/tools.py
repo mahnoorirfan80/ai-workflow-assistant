@@ -18,6 +18,8 @@ from typing import Optional
 from langchain_core.runnables import RunnableConfig
 from app.state.file_state import resume_store
 
+from dotenv import load_dotenv
+load_dotenv()
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -91,7 +93,6 @@ Resume:
     except Exception as e:
         print("🔥 Error during summarization:", str(e))
         return f"Error in summarization: {str(e)}"
-
 
 
 @tool
