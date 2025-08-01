@@ -1,43 +1,32 @@
-import { Bot, User } from 'lucide-react';
+import React from 'react';
+import { marked } from 'marked';
 
 interface ChatMessageProps {
   message: string;
   isUser: boolean;
-  timestamp?: Date;
+  timestamp: Date;
 }
 
 export default function ChatMessage({ message, isUser, timestamp }: ChatMessageProps) {
   return (
-    <div className={`flex gap-3 p-4 ${isUser ? 'justify-end' : 'justify-start'}`}>
-      {!isUser && (
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary">
-          <Bot className="h-4 w-4 text-white" />
-        </div>
-      )}
-      
-      <div className={`max-w-lg space-y-2 ${isUser ? 'order-first' : ''}`}>
-        <div
-          className={`rounded-lg px-4 py-3 text-sm ${
-            isUser
-              ? 'bg-chat-user text-white ml-auto'
-              : 'bg-chat-assistant text-foreground'
-          }`}
-        >
-          {message}
-        </div>
-        
-        {timestamp && (
-          <p className={`text-xs text-muted-foreground ${isUser ? 'text-right' : ''}`}>
-            {timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-          </p>
-        )}
+    <div
+      className={`p-3 rounded-md max-w-3xl ${
+        isUser ? 'bg-blue-100 self-end text-right' : 'bg-gray-100 self-start text-left'
+      }`}
+    >
+     {isUser ? (
+  <p className="whitespace-pre-wrap">{message}</p>
+) : (
+  <div
+    className="prose prose-sm max-w-none whitespace-pre-wrap"
+    dangerouslySetInnerHTML={{
+      __html: marked.parse(typeof message === 'string' ? message : JSON.stringify(message)),
+    }}
+  />
+)}
+      <div className="text-xs text-gray-400 mt-1">
+        {timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
       </div>
-      
-      {isUser && (
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-secondary">
-          <User className="h-4 w-4 text-secondary-foreground" />
-        </div>
-      )}
     </div>
   );
 }

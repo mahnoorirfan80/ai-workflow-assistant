@@ -2,6 +2,7 @@ import { useState, useRef } from 'react';
 import { Upload, FileText, CheckCircle } from 'lucide-react';
 import { uploadResume } from '@/services/api';
 import { useToast } from '@/hooks/use-toast';
+import { marked } from 'marked';
 
 interface UploadedFile {
   name: string;
@@ -18,8 +19,10 @@ export default function Files() {
   const handleFileUpload = async (file: File) => {
     if (!file) return;
 
-    // Validate file type
-    const allowedTypes = ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    const allowedTypes = [
+      'application/pdf',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    ];
     if (!allowedTypes.includes(file.type)) {
       toast({
         title: 'Invalid file type',
@@ -33,15 +36,15 @@ export default function Files() {
 
     try {
       const response = await uploadResume(file);
-      
+
       const newFile: UploadedFile = {
         name: file.name,
         summary: response.summary,
         uploadedAt: new Date(),
       };
 
-      setUploadedFiles(prev => [newFile, ...prev]);
-      
+      setUploadedFiles((prev) => [newFile, ...prev]);
+
       toast({
         title: 'File uploaded successfully',
         description: 'Your file has been processed and summarized.',
@@ -94,17 +97,14 @@ export default function Files() {
             <p className="text-sm text-muted-foreground mb-4">
               Drag and drop your PDF or DOCX files here, or click to browse
             </p>
-            <button 
-              disabled={isUploading}
-              className="btn btn-gradient transition-all"
-            >
+            <button disabled={isUploading} className="btn btn-gradient transition-all">
               {isUploading ? 'Processing...' : 'Choose Files'}
             </button>
             <p className="text-xs text-muted-foreground mt-2">
               Supported formats: PDF, DOCX (Max 10MB)
             </p>
           </div>
-          
+
           <input
             ref={fileInputRef}
             type="file"
@@ -137,7 +137,10 @@ export default function Files() {
                       </h3>
                       <p className="text-sm text-muted-foreground">
                         Processed on {file.uploadedAt.toLocaleDateString()} at{' '}
-                        {file.uploadedAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        {file.uploadedAt.toLocaleTimeString([], {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
                       </p>
                     </div>
                   </div>
@@ -145,7 +148,10 @@ export default function Files() {
                 <div className="card-content">
                   <div className="rounded-lg bg-muted p-4">
                     <h4 className="font-medium mb-2">Summary:</h4>
-                    <p className="text-sm text-muted-foreground">{file.summary}</p>
+                    <div
+                      className="prose max-w-none text-sm text-muted-foreground"
+                      dangerouslySetInnerHTML={{ __html: marked.parse(file.summary) }}
+                    />
                   </div>
                 </div>
               </div>

@@ -9,7 +9,7 @@ export default function Email() {
   const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
 
-  // ✅ Create session ID like in Chat.tsx
+
   const sessionId = useRef<string>(Math.floor(Math.random() * 100000).toString());
 
   const handleGenerateEmail = async () => {
@@ -27,7 +27,7 @@ export default function Email() {
     try {
       const prompt = `Generate a professional email using these bullet points:\n\n${bulletPoints}\n\nPlease create a well-structured, formal email with appropriate greeting, body, and closing.`;
 
-      // ✅ Pass both prompt and session ID
+     
       const response = await sendMessage(prompt, sessionId.current);
       setGeneratedEmail(response.output);
 

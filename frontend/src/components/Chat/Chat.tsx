@@ -20,11 +20,16 @@ export default function Chat() {
       timestamp: new Date(),
     },
   ]);
+
+  const [resumeOutput, setResumeOutput] = useState<null | {
+    parsed: any;
+    summary: string;
+    google_docs_link: string;
+  }>(null);
+
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
-
-  // ✅ Correct initialization
   const sessionId = useRef<string>(Math.floor(Math.random() * 100000).toString());
 
   const scrollToBottom = () => {
@@ -47,18 +52,40 @@ export default function Chat() {
     setIsLoading(true);
 
     try {
-      // ✅ Pass both text and sessionId
-      const response = await sendMessage(text, sessionId.current);
+  const response = await sendMessage(text, sessionId.current);
+  const raw = response.output;
 
-      const assistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        text: response.output,
-        isUser: false,
-        timestamp: new Date(),
-      };
+  let assistantMessage: Message = {
+    id: (Date.now() + 1).toString(),
+    text: raw,
+    isUser: false,
+    timestamp: new Date(),
+  };
 
-      setMessages(prev => [...prev, assistantMessage]);
-    } catch (error) {
+
+
+  // Try parsing response to JSON (if it's the resume pipeline response)
+  try {
+    const parsedJson = JSON.parse(raw);
+
+    // If it's the structured resume result, extract and store
+    if (parsedJson.status === "saved") {
+      setResumeOutput({
+        parsed: parsedJson.parsed,
+        summary: parsedJson.summary,
+        google_docs_link: parsedJson.google_docs_link,
+      });
+
+      // Replace assistant message with more readable summary if needed
+      assistantMessage.text = "✅ Resume processed. Summary and parsed data are displayed below.";
+    }
+  } catch (err) {
+    // Not JSON, fallback to showing as plain text
+  }
+
+  setMessages(prev => [...prev, assistantMessage]);
+}
+     catch (error) {
       console.error('Error sending message:', error);
       toast({
         title: 'Error',
@@ -96,6 +123,33 @@ export default function Chat() {
           <div ref={messagesEndRef} />
         </div>
       </div>
+
+      {resumeOutput && (
+  <div className="mt-4 p-4 border rounded-md bg-white space-y-4 text-sm">
+    <h2 className="text-lg font-semibold">📄 Resume Summary</h2>
+    <div className="whitespace-pre-wrap">{resumeOutput.summary}</div>
+
+    <h3 className="font-semibold pt-2">📋 Parsed Details</h3>
+    <ul className="list-disc list-inside">
+      {Object.entries(resumeOutput.parsed).map(([key, value]) => (
+        <li key={key}>
+          <strong>{key}:</strong> {typeof value === 'string' ? value : JSON.stringify(value)}
+        </li>
+      ))}
+    </ul>
+
+    <div>
+      <a
+        href={resumeOutput.google_docs_link}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-blue-600 underline"
+      >
+        📎 View in Google Docs
+      </a>
+    </div>
+  </div>
+)}
 
       {/* Chat Input */}
       <ChatInput onSendMessage={handleSendMessage} isLoading={isLoading} />
