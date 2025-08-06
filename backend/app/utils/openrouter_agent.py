@@ -1,31 +1,27 @@
 import os
 from dotenv import load_dotenv
 from typing import Dict
-from app.utils.persistent_memory import PersistentChatMessageHistory
-from langchain.agents import AgentExecutor, create_tool_calling_agent
-from langchain_community.chat_message_histories import ChatMessageHistory
 
+# LangChain Core
 from langchain.agents import AgentExecutor, create_tool_calling_agent
-from langchain.memory import ChatMessageHistory
-from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables.history import RunnableWithMessageHistory
-from langchain_core.runnables import Runnable
+from langchain_core.chat_history import BaseChatMessageHistory
+from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_openai import ChatOpenAI
-from app.utils.tools import tools  # ✅ All tools imported from one place
 
-from app.utils.tools import tools  # ✅ All tools imported from one place
+# Your App Tools & State
+from app.utils.persistent_memory import PersistentChatMessageHistory
+from app.utils.tools import tools
+from app.state.file_state import file_state, resume_store
 
-# Load API key from .env
-load_dotenv()
+# === Load .env FIRST ===
+load_dotenv(dotenv_path="backend/.env")
+api_key = os.getenv("OPENAI_API_KEY")
+use_mock = os.getenv("USE_MOCK", "true").lower() == "true"
 
-# === LLM Setup ===
-llm = ChatOpenAI(
-    model="gpt-4.1-mini",
-    openai_api_base="https://openrouter.ai/api/v1",
-    openai_api_key=os.getenv("OPENROUTER_API_KEY"),
-    temperature=0.7,
-)
+print(f" OPENAI_API_KEY loaded: {api_key}")
+print(f" USE_MOCK = {use_mock}")
 
 prompt = ChatPromptTemplate.from_messages([
     ("system", 
@@ -37,6 +33,7 @@ prompt = ChatPromptTemplate.from_messages([
      "- scrape_website: Extracts and summarizes content from a given URL.\n"
      "- save_to_notion: Saves text summaries or links into your Notion database.\n"
      "- get_calendar_events: Fetches upcoming calendar events (real-time).\n"
+     "- parse_resume: Extracts name, email, phone, skills, education, and experience from a resume PDF already located in the test_files folder (no need to upload).\n"
      "Use these tools only when needed and explain your reasoning."
     ),
     MessagesPlaceholder(variable_name="chat_history"),
@@ -44,22 +41,40 @@ prompt = ChatPromptTemplate.from_messages([
     MessagesPlaceholder(variable_name="agent_scratchpad"),
 ])
 
-# === Agent with Tool Calling ===
-agent = create_tool_calling_agent(llm, tools, prompt)
-
-# === Agent Executor with Tool List ===
-agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
-
-# === In-Memory Session Store ===
+# === Session memory store ===
 memory_store: Dict[str, ChatMessageHistory] = {}
 
 def get_session_history(session_id: str) -> BaseChatMessageHistory:
     return PersistentChatMessageHistory(session_id=session_id)
 
-# === Runnable Agent with Memory ===
-agent_with_memory: Runnable = RunnableWithMessageHistory(
-    agent_executor,
-    get_session_history,
-    input_messages_key="input",
-    history_messages_key="chat_history",
-)
+# === MOCK MODE ===
+if use_mock or not api_key:
+    print(" Using MOCK agent_with_memory")
+
+    class MockAgentExecutor:
+        async def ainvoke(self, input_dict, config=None):
+            print("MOCK agent invoked with input:", input_dict)
+            return {"output": "This is a mocked response."}
+
+    agent_with_memory = MockAgentExecutor()
+
+# === REAL AGENT MODE ===
+else:
+    print("Using REAL agent_with_memory")
+
+    llm = ChatOpenAI(
+        model=os.getenv("OPENAI_MODEL", "gpt-4"),
+        openai_api_key=api_key,
+        openai_api_base=os.getenv("OPENAI_BASE_URL", "https://openrouter.ai/api/v1"),
+        temperature=0.5,
+    )
+
+    agent = create_tool_calling_agent(llm, tools, prompt)
+    agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
+
+    agent_with_memory = RunnableWithMessageHistory(
+        agent_executor,
+        get_session_history,
+        input_messages_key="input",
+        history_messages_key="chat_history",
+    )

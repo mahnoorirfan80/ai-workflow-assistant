@@ -4,19 +4,20 @@ from langchain_openai import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
 from langchain.agents import initialize_agent, AgentType
 from langchain_core.tools import Tool
+import json
 
 load_dotenv()
 openai_api_key = os.getenv("OPENAI_API_KEY")
 
 llm = ChatOpenAI(
-    model="gpt-3.5-turbo",
+    model="gpt-4-turbo",
     temperature=0.7,
     api_key=openai_api_key
 )
 
 memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
 
-# Define dummy tool for now
+
 def dummy_tool(input: str) -> str:
     return f"Tool processed: {input}"
 
@@ -34,3 +35,12 @@ agent = initialize_agent(
 
 def run_agent(input_text: str) -> str:
     return agent.run(input_text)
+
+
+def format_agent_response(parsed_data, summary_text, doc_link):
+    return json.dumps({
+        "parsed": parsed_data,
+        "summary": summary_text,
+        "google_docs_link": doc_link,
+        "status": "saved"
+    }, indent=2)
