@@ -184,6 +184,10 @@
   color: hsl(var(--color-foreground));
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> backup-working-code
 /* Switch */
 .switch {
   position: relative;

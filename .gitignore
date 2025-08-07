@@ -1,36 +1,31 @@
-# === Python ===
+# Python
+*.pyc
 __pycache__/
-*.py[cod]
-*.log
-venv/
+*.pkl
 .venv/
+venv/
+env/
+*.env
 
-# === Environment Files ===
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-# === Node / React Frontend ===
+# Node
 node_modules/
-.pnp
-.pnp.js
-coverage/
-build/
-
-# === Logs ===
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+dist/
+build/
 
-# === Editor / IDE ===
-.vscode/
-
-# === OS Files ===
+# System
 .DS_Store
 Thumbs.db
 
-tokens.json
-credentials.json
-backend/app/config/credentials.json
+# IDEs
+.vscode/
+.idea/
+
+# Others
+*.log
+*.bak
+*.zip
+*.tar
+*.tar.gz

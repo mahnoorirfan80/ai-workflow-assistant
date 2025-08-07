@@ -10,7 +10,7 @@ load_dotenv()
 openai_api_key = os.getenv("OPENAI_API_KEY")
 
 llm = ChatOpenAI(
-    model="gpt-3.5-turbo",
+    model="gpt-4-turbo",
     temperature=0.7,
     api_key=openai_api_key
 )
@@ -18,6 +18,7 @@ llm = ChatOpenAI(
 memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
 
 # Define dummy tool for now
+
 def dummy_tool(input: str) -> str:
     return f"Tool processed: {input}"
 

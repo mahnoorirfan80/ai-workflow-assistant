@@ -234,24 +234,45 @@
 
 .main-content {
   flex: 1;
+<<<<<<< HEAD
+=======
+  display: flex; 
+  flex-direction: column;
+  height: 100%;
+>>>>>>> backup-working-code
   overflow: hidden;
 }
 
 .content-wrapper {
+<<<<<<< HEAD
   height: 100%;
   padding: 2rem;
   overflow-y: auto;
+=======
+  flex: 1; 
+  padding: 2rem;
+  overflow-y: auto;
+
+>>>>>>> backup-working-code
 }
 
 .chat-container {
   display: flex;
+<<<<<<< HEAD
   height: 100%;
+=======
+  height: 100%;  
+>>>>>>> backup-working-code
   flex-direction: column;
 }
 
 .chat-messages {
   flex: 1;
   overflow-y: auto;
+<<<<<<< HEAD
+=======
+  padding: 1rem;
+>>>>>>> backup-working-code
 }
 
 .chat-input-container {

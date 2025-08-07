@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+python-dotenv
+openai>=1.0.0
+beautifulsoup4
+notion-client
+requests
+langchain-openai

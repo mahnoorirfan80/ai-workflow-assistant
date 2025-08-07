@@ -1,9 +1,17 @@
+<<<<<<< HEAD
 /* Import our custom CSS files */
+=======
+/* Import custom CSS files */
+>>>>>>> backup-working-code
 @import './styles/globals.css';
 @import './styles/layout.css';
 @import './styles/components.css';
 
+<<<<<<< HEAD
 /* src/index.css */
+=======
+
+>>>>>>> backup-working-code
 body {
   font-family: Arial, sans-serif;
   margin: 0;
