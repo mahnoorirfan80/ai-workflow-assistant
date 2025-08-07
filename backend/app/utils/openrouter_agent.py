@@ -1,42 +1,6 @@
 import os
 from dotenv import load_dotenv
 from typing import Dict
-<<<<<<< HEAD
-from app.utils.persistent_memory import PersistentChatMessageHistory
-from langchain.agents import AgentExecutor, create_tool_calling_agent
-from langchain_community.chat_message_histories import ChatMessageHistory
-from langchain_core.chat_history import BaseChatMessageHistory
-from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-from langchain_core.runnables.history import RunnableWithMessageHistory
-from langchain_core.runnables import Runnable
-from langchain_openai import ChatOpenAI
-from app.utils.tools import tools  
-from app.state.file_state import file_state 
-from app.state.file_state import resume_store
-
-
-
-# Load API key from .env
-load_dotenv()
-print("🔑 OPENAI_API_KEY loaded:", os.getenv("OPENAI_API_KEY"))
-
-# === LLM Setup ===
-# llm = ChatOpenAI(
-#     model="gpt-4.1-mini",
-#     openai_api_base="https://openrouter.ai/api/v1",
-#     openai_api_key=os.getenv("OPENROUTER_API_KEY"),
-#     temperature=0.7,
-# )
-
-
-llm = ChatOpenAI(
-    model="gpt-4-turbo",  # ✅ Update this line
-    openai_api_key=os.getenv("OPENAI_API_KEY"),
-    openai_api_base="https://openrouter.ai/api/v1",
-    temperature=0.7,
-)
-
-=======
 
 # LangChain Core
 from langchain.agents import AgentExecutor, create_tool_calling_agent
@@ -58,7 +22,6 @@ use_mock = os.getenv("USE_MOCK", "true").lower() == "true"
 
 print(f" OPENAI_API_KEY loaded: {api_key}")
 print(f" USE_MOCK = {use_mock}")
->>>>>>> backup-working-code
 
 prompt = ChatPromptTemplate.from_messages([
     ("system", 
@@ -78,32 +41,12 @@ prompt = ChatPromptTemplate.from_messages([
     MessagesPlaceholder(variable_name="agent_scratchpad"),
 ])
 
-<<<<<<< HEAD
-# === Agent with Tool Calling ===
-agent = create_tool_calling_agent(llm, tools, prompt)
-
-# === Agent Executor with Tool List ===
-agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
-
-# === In-Memory Session Store ===
-=======
 # === Session memory store ===
->>>>>>> backup-working-code
 memory_store: Dict[str, ChatMessageHistory] = {}
 
 def get_session_history(session_id: str) -> BaseChatMessageHistory:
     return PersistentChatMessageHistory(session_id=session_id)
 
-<<<<<<< HEAD
-# === Runnable Agent with Memory ===
-agent_with_memory: Runnable = RunnableWithMessageHistory(
-    agent_executor,
-    get_session_history,
-    input_messages_key="input",
-    history_messages_key="chat_history",
-)
-
-=======
 # === MOCK MODE ===
 if use_mock or not api_key:
     print(" Using MOCK agent_with_memory")
@@ -135,4 +78,3 @@ else:
         input_messages_key="input",
         history_messages_key="chat_history",
     )
->>>>>>> backup-working-code

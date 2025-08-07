@@ -1,9 +1,5 @@
 import { useState } from 'react';
-<<<<<<< HEAD
-import { Send } from 'lucide-react';
-=======
 import { Send, Paperclip } from 'lucide-react';
->>>>>>> backup-working-code
 import axios from "axios";
 
 interface ChatInputProps {
@@ -13,12 +9,7 @@ interface ChatInputProps {
 
 export default function ChatInput({ onSendMessage, isLoading }: ChatInputProps) {
   const [message, setMessage] = useState('');
-<<<<<<< HEAD
-  const [messages, setMessages] = useState<{ role: "user" | "assistant"; content: string }[]>([]);
-  const [isUploading, setIsUploading] = useState(false); // separate loader for file upload
-=======
   const [isUploading, setIsUploading] = useState(false);
->>>>>>> backup-working-code
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,29 +36,11 @@ export default function ChatInput({ onSendMessage, isLoading }: ChatInputProps) 
     formData.append("file", file);
 
     try {
-<<<<<<< HEAD
-      const response = await axios.post("http://localhost:8000/upload-resume/", formData, {
-=======
       const response = await axios.post("http://localhost:3000/upload-resume/", formData, {
->>>>>>> backup-working-code
         headers: { "Content-Type": "multipart/form-data" },
       });
 
       const summary = response.data.summary;
-<<<<<<< HEAD
-
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { role: "user", content: `Uploaded document: ${file.name}` },
-        { role: "assistant", content: summary },
-      ]);
-    } catch (error) {
-      console.error("Error uploading file:", error);
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { role: "assistant", content: "Failed to summarize document." },
-      ]);
-=======
       const gdoc = response.data.google_docs_link;
       const docUrl = gdoc.match(/\((https:\/\/docs\.google\.com\/[^\)]+)\)/)?.[1];
       const markdownMessage = `###  Resume Summary\n${summary}\n\n🔗 [View in Google Docs](${docUrl})`;
@@ -77,47 +50,12 @@ export default function ChatInput({ onSendMessage, isLoading }: ChatInputProps) 
     } catch (error) {
       console.error("Error uploading file:", error);
       alert(" Failed to summarize document.");
->>>>>>> backup-working-code
     } finally {
       setIsUploading(false);
     }
   };
 
   return (
-<<<<<<< HEAD
-    <form onSubmit={handleSubmit} className="chat-input-container flex flex-col gap-2">
-      <div className="flex items-center gap-2">
-        <textarea
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder="Type your message..."
-          rows={1}
-          className="textarea textarea-no-resize min-h-11 max-h-32 flex-1"
-          disabled={isLoading || isUploading}
-          style={{ resize: 'none' }}
-        />
-
-        <button
-          type="submit"
-          disabled={!message.trim() || isLoading}
-          className="btn btn-icon btn-gradient transition-all"
-        >
-          <Send className="h-4 w-4" />
-        </button>
-      </div>
-
-      <input
-        type="file"
-        accept=".pdf,.doc,.docx"
-        onChange={handleFileUpload}
-        disabled={isUploading}
-        className="file-input"
-      />
-    </form>
-  );
-}
-=======
     <form
       onSubmit={handleSubmit}
       className="flex items-center w-full gap-2 px-4 py-3 bg-white"
@@ -154,4 +92,3 @@ export default function ChatInput({ onSendMessage, isLoading }: ChatInputProps) 
     </form>
   );
   }
->>>>>>> backup-working-code

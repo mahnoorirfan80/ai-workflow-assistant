@@ -1,30 +1,3 @@
-<<<<<<< HEAD
-import { MessageCircle, FileText, Workflow, TrendingUp } from 'lucide-react';
-import { Link } from 'react-router-dom';
-
-export default function Dashboard() {
-  const stats = [
-    { name: 'Total Conversations', value: '24', icon: MessageCircle, trend: '+12%' },
-    { name: 'Files Processed', value: '18', icon: FileText, trend: '+8%' },
-    { name: 'Workflows Created', value: '12', icon: Workflow, trend: '+24%' },
-    { name: 'Time Saved', value: '42h', icon: TrendingUp, trend: '+15%' },
-  ];
-
-  const quickActions = [
-    {
-      title: 'Start New Chat',
-      description: 'Ask the AI assistant anything',
-      icon: MessageCircle,
-      href: '/chat',
-      color: 'bg-blue-500',
-    },
-    {
-      title: 'Upload Document',
-      description: 'Parse and analyze your files',
-      icon: FileText,
-      href: '/files',
-      color: 'bg-green-500',
-=======
 import { MessageCircle, FileText, Workflow, TrendingUp, MessageSquare, MessageCircleCodeIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -77,18 +50,13 @@ export default function Dashboard() {
       icon: FileText,
       href: '/files',
       color: 'bg-green-5',
->>>>>>> backup-working-code
     },
     {
       title: 'Generate Email',
       description: 'Create emails from bullet points',
       icon: Workflow,
       href: '/email',
-<<<<<<< HEAD
-      color: 'bg-purple-500',
-=======
       color: 'bg-maroon-500',
->>>>>>> backup-working-code
     },
   ];
 
@@ -96,44 +64,16 @@ export default function Dashboard() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-<<<<<<< HEAD
-        <h1 className="text-3xl font-bold text-gradient-primary">
-          Welcome back!
-        </h1>
-=======
         <h1 className="text-3xl font-bold">
         <span className="text-black">Welcome to </span>
         <span className="text-gradient-primary">AI Workflow Assistant!</span>
         </h1>
 
->>>>>>> backup-working-code
         <p className="text-muted-foreground mt-2">
           Here's an overview of your AI workflow activities.
         </p>
       </div>
 
-<<<<<<< HEAD
-      {/* Stats */}
-      <div className="grid grid-gap-6 md:grid-cols-2 lg:grid-cols-4">
-        {stats.map((stat) => (
-          <div key={stat.name} className="card transition-all shadow-elegant">
-            <div className="card-content p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">{stat.name}</p>
-                  <p className="text-2xl font-bold">{stat.value}</p>
-                  <p className="text-sm text-green-600">{stat.trend} from last week</p>
-                </div>
-                <div className="h-12 w-12 rounded-lg bg-gradient-primary flex items-center justify-center">
-                  <stat.icon className="h-6 w-6 text-white" />
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-=======
      
 <div className="card shadow-elegant">
   <div className="card-content p-6">
@@ -191,7 +131,6 @@ export default function Dashboard() {
       </div>
 
 
->>>>>>> backup-working-code
       {/* Quick Actions */}
       <div>
         <h2 className="text-xl font-semibold mb-6">Quick Actions</h2>
@@ -216,8 +155,5 @@ export default function Dashboard() {
       </div>
     </div>
   );
-<<<<<<< HEAD
-=======
       
->>>>>>> backup-working-code
 }

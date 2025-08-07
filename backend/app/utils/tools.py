@@ -17,14 +17,6 @@ from app.state.file_state import file_state
 from typing import Optional
 from langchain_core.runnables import RunnableConfig
 from app.state.file_state import resume_store
-<<<<<<< HEAD
-
-from dotenv import load_dotenv
-load_dotenv()
-
-from dotenv import load_dotenv
-load_dotenv()
-=======
 from .embedding_store import load_embedding, save_embedding
 from .rag_store import create_retriever_from_text
 from io import BytesIO
@@ -35,7 +27,6 @@ from fastapi import UploadFile
 from dotenv import load_dotenv
 load_dotenv()
 USE_MOCK = False
->>>>>>> backup-working-code
 
 @tool
 def get_current_datetime(dummy_input: str) -> str:
@@ -57,16 +48,6 @@ llm = ChatOpenAI(
     model="gpt-4-turbo",  
     openai_api_key=os.getenv("OPENAI_API_KEY"),
     openai_api_base=os.getenv("OPENAI_BASE_URL"),
-<<<<<<< HEAD
-    temperature=0.5,
-)
-
-@tool
-def summarize_text(text: str) -> str:
-    """
-    Summarizes resume-like text into clean Markdown format with proper headers and bullet points.
-    """
-=======
     temperature=0.7,
 )
 
@@ -88,52 +69,12 @@ def summarize_text(text: str) -> str:
     if cached:
         return cached
 
->>>>>>> backup-working-code
     try:
         llm = ChatOpenAI(
             model="gpt-4-turbo",
             temperature=0.2,
             openai_api_key=os.getenv("OPENAI_API_KEY"),
             openai_api_base=os.getenv("OPENAI_BASE_URL"),
-<<<<<<< HEAD
-            timeout=30  # <-- ⏱ Add timeout here (seconds)
-        )
-
-        prompt = ChatPromptTemplate.from_template("""
-You are an expert resume formatter.
-
-Format the following resume content in clean **Markdown** with these **section headers**:
-
-## 👤 Name & Contact  
-## 🔗 LinkedIn  
-## 🎓 Education  
-## 💼 Experience  
-## 💻 Projects  
-## 🛠️ Technical Skills
-
-**Instructions:**
-- Use **bold titles** and bullet points.
-- One line per bullet.
-- Add line breaks between sections.
-- No explanations, just the Markdown output.
-
-Resume:
-{text}
-""")
-
-        chain: Runnable = prompt | llm
-
-        print("✅ Starting summary generation...")
-        response = llm.invoke(f"Summarize the following resume in a structured bullet point format:\n\n{text}")
-        print("✅ Summary generation complete.")
-        return response.content if hasattr(response, 'content') else str(response)
-
-    except Exception as e:
-        print("🔥 Error during summarization:", str(e))
-        return f"Error in summarization: {str(e)}"
-
-
-=======
             timeout=30
         )
 
@@ -180,7 +121,6 @@ Resume:
 
 
 
->>>>>>> backup-working-code
 @tool
 def get_weather(city: str) -> str:
     """Returns weather information for a given city (dummy output)."""
@@ -194,20 +134,12 @@ def scrape_website(url: str) -> str:
         response = requests.get(url, timeout=5)
         soup = BeautifulSoup(response.content, "html.parser")
 
-<<<<<<< HEAD
-        # Remove script/style content
-=======
        
->>>>>>> backup-working-code
         for tag in soup(["script", "style"]):
             tag.decompose()
 
         text = soup.get_text(separator=' ', strip=True)
-<<<<<<< HEAD
-        safe_limit = min(len(text), 8000)  # To avoid index errors
-=======
         safe_limit = min(len(text), 3000)  
->>>>>>> backup-working-code
         return f"Website content from {url}:\n\n{text[:safe_limit]}..."
 
     except Exception as e:
@@ -297,17 +229,6 @@ def parse_resume(session_id: str) -> dict:
 
 
 
-<<<<<<< HEAD
-
-SCOPES = ["https://www.googleapis.com/auth/documents", "https://www.googleapis.com/auth/drive"]
-@tool
-def save_to_google_docs(summary: str) -> str:
-    """Saves the given summary to a new Google Doc and returns the document link."""
-
-    creds = None
-    creds_path = os.path.join("app", "config", "credentials.json")
-
-=======
 @tool
 def parse_resume_rag(file_bytes_b64: str, session_id: str = "default_session") -> str:
     """Extracts and saves resume content for later Q&A from a base64 string."""
@@ -348,7 +269,6 @@ def save_to_google_docs(content: str) -> str:
     creds_path = os.path.join("app", "config", "credentials.json")
     
     
->>>>>>> backup-working-code
     if os.path.exists("token.json"):
         creds = Credentials.from_authorized_user_file("token.json", SCOPES)
     else:
@@ -358,21 +278,6 @@ def save_to_google_docs(content: str) -> str:
             token.write(creds.to_json())
 
     # Create Google Docs API service
-<<<<<<< HEAD
-    docs_service = build('docs', 'v1', credentials=creds)
-    drive_service = build('drive', 'v3', credentials=creds)
-
-    # Create the document
-    doc = docs_service.documents().create(body={"title": "AI Assistant Summary"}).execute()
-    doc_id = doc.get('documentId')
-
-    # Insert summary text
-    docs_service.documents().batchUpdate(
-        documentId=doc_id,
-        body={
-            'requests': [
-                {'insertText': {'location': {'index': 1}, 'text': summary}}
-=======
     service = build('docs', 'v1', credentials=creds)
 
     # Create the document
@@ -388,23 +293,12 @@ def save_to_google_docs(content: str) -> str:
                     'location': {'index': 1},
                     'text': content
                 }}
->>>>>>> backup-working-code
             ]
         }
     ).execute()
 
-<<<<<<< HEAD
-    # Make document public
-    drive_service.permissions().create(
-        fileId=doc_id,
-        body={"role": "reader", "type": "anyone"},
-    ).execute()
-
-    return f"✅ Summary saved to Google Docs: [View document](https://docs.google.com/document/d/{doc_id}/edit)"
-=======
     # Return the document link
     return f"https://docs.google.com/document/d/{doc_id}/edit"
->>>>>>> backup-working-code
 
 
 
@@ -440,11 +334,7 @@ def handle_resume_workflow(session_id: str) -> str:
             })
 
         full_text = json.dumps(parsed_data, indent=2)
-<<<<<<< HEAD
-        summary = summarize_text(full_text)
-=======
         summary = "🧪 Mock summary for resume." if USE_MOCK else summarize_text(full_text)
->>>>>>> backup-working-code
         doc_link = save_to_google_docs(summary)
 
         result = {
@@ -481,10 +371,7 @@ tools =[
     get_calendar_events,
     clear_memory,
     parse_resume,
-<<<<<<< HEAD
-=======
     parse_resume_rag,
->>>>>>> backup-working-code
     save_to_google_docs,
     handle_resume_workflow,
     scrape_and_summarize
