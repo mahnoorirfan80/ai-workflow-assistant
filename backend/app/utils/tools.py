@@ -10,9 +10,6 @@ import re
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
-from langchain.tools import tool
-from langchain.tools import tool
-from langchain_core.tools import tool
 from langchain_openai import ChatOpenAI 
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import Runnable
@@ -20,6 +17,9 @@ from app.state.file_state import file_state
 from typing import Optional
 from langchain_core.runnables import RunnableConfig
 from app.state.file_state import resume_store
+
+from dotenv import load_dotenv
+load_dotenv()
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -50,24 +50,45 @@ llm = ChatOpenAI(
 @tool
 def summarize_text(text: str) -> str:
     """
-    Summarize the given text using GPT model via OpenRouter.
+    Summarizes resume-like text into clean Markdown format with proper headers and bullet points.
     """
     try:
         llm = ChatOpenAI(
-            model="gpt-4.1-mini",  # or "openrouter/gpt-4.1-mini" if that works for you
-            temperature=0.5,
+            model="gpt-4-turbo",
+            temperature=0.2,
             openai_api_key=os.getenv("OPENAI_API_KEY"),
             openai_api_base=os.getenv("OPENAI_BASE_URL"),
+            timeout=30  # <-- ⏱ Add timeout here (seconds)
         )
 
-        prompt = ChatPromptTemplate.from_template(
-            "Summarize this information in 5 bullet points:\n{text}"
-        )
+        prompt = ChatPromptTemplate.from_template("""
+You are an expert resume formatter.
+
+Format the following resume content in clean **Markdown** with these **section headers**:
+
+## 👤 Name & Contact  
+## 🔗 LinkedIn  
+## 🎓 Education  
+## 💼 Experience  
+## 💻 Projects  
+## 🛠️ Technical Skills
+
+**Instructions:**
+- Use **bold titles** and bullet points.
+- One line per bullet.
+- Add line breaks between sections.
+- No explanations, just the Markdown output.
+
+Resume:
+{text}
+""")
 
         chain: Runnable = prompt | llm
 
-        response = chain.invoke({"text": text})
-        return response.content.strip()
+        print("✅ Starting summary generation...")
+        response = llm.invoke(f"Summarize the following resume in a structured bullet point format:\n\n{text}")
+        print("✅ Summary generation complete.")
+        return response.content if hasattr(response, 'content') else str(response)
 
     except Exception as e:
         print("🔥 Error during summarization:", str(e))
@@ -181,16 +202,16 @@ def parse_resume(session_id: str) -> dict:
         return {"error": str(e)}
 
 
-SCOPES = ['https://www.googleapis.com/auth/documents', 'https://www.googleapis.com/auth/drive.file']
 
+
+SCOPES = ["https://www.googleapis.com/auth/documents", "https://www.googleapis.com/auth/drive"]
 @tool
-def save_to_google_docs(content: str) -> str:
-    """Saves the given content to a new Google Doc and returns the doc link."""
+def save_to_google_docs(summary: str) -> str:
+    """Saves the given summary to a new Google Doc and returns the document link."""
 
     creds = None
     creds_path = os.path.join("app", "config", "credentials.json")
-    
-    # Load credentials from token or generate new one
+
     if os.path.exists("token.json"):
         creds = Credentials.from_authorized_user_file("token.json", SCOPES)
     else:
@@ -200,27 +221,31 @@ def save_to_google_docs(content: str) -> str:
             token.write(creds.to_json())
 
     # Create Google Docs API service
-    service = build('docs', 'v1', credentials=creds)
+    docs_service = build('docs', 'v1', credentials=creds)
+    drive_service = build('drive', 'v3', credentials=creds)
 
     # Create the document
-    doc = service.documents().create(body={"title": "AI Assistant Summary"}).execute()
+    doc = docs_service.documents().create(body={"title": "AI Assistant Summary"}).execute()
     doc_id = doc.get('documentId')
 
-    # Insert text into the document
-    service.documents().batchUpdate(
+    # Insert summary text
+    docs_service.documents().batchUpdate(
         documentId=doc_id,
         body={
             'requests': [
-                {'insertText': {
-                    'location': {'index': 1},
-                    'text': content
-                }}
+                {'insertText': {'location': {'index': 1}, 'text': summary}}
             ]
         }
     ).execute()
 
-    # Return the document link
-    return f"https://docs.google.com/document/d/{doc_id}/edit"
+    # Make document public
+    drive_service.permissions().create(
+        fileId=doc_id,
+        body={"role": "reader", "type": "anyone"},
+    ).execute()
+
+    return f"✅ Summary saved to Google Docs: [View document](https://docs.google.com/document/d/{doc_id}/edit)"
+
 
 
 @tool
@@ -291,7 +316,6 @@ tools =[
     scrape_website,
     get_calendar_events,
     clear_memory,
-    get_calendar_events,
     parse_resume,
     save_to_google_docs,
     handle_resume_workflow,

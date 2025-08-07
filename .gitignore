@@ -30,3 +30,7 @@ yarn-error.log*
 # === OS Files ===
 .DS_Store
 Thumbs.db
+
+tokens.json
+credentials.json
+backend/app/config/credentials.json
