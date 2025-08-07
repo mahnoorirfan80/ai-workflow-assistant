@@ -1,0 +1,11 @@
+/* Import custom CSS files */
+@import './styles/globals.css';
+@import './styles/layout.css';
+@import './styles/components.css';
+
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
