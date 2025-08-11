@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
-import { Upload, FileText, CheckCircle } from 'lucide-react';
-import { uploadResume } from '@/services/api';
+import { Upload, FileText, CheckCircle, Loader2 } from 'lucide-react';
+import { uploadResume } from '../services/api';
 import { useToast } from '@/hooks/use-toast';
 import { marked } from 'marked';
 
@@ -8,6 +8,7 @@ interface UploadedFile {
   name: string;
   summary: string;
   uploadedAt: Date;
+  googleDocsLink?: string;
 }
 
 export default function Files() {
@@ -26,7 +27,7 @@ export default function Files() {
     if (!allowedTypes.includes(file.type)) {
       toast({
         title: 'Invalid file type',
-        description: 'Please upload only PDF or DOCX files.',
+        description: 'Please upload only PDF resume.',
         variant: 'destructive',
       });
       return;
@@ -37,23 +38,28 @@ export default function Files() {
     try {
       const response = await uploadResume(file);
 
+      const summaryWithLink = response.google_docs_link
+        ? `🔗 [View summary on Google Docs](${response.google_docs_link})\n\n${response.summary}`
+        : response.summary;
+
       const newFile: UploadedFile = {
         name: file.name,
-        summary: response.summary,
+        summary: summaryWithLink,
         uploadedAt: new Date(),
+        googleDocsLink: response.google_docs_link,
       };
 
       setUploadedFiles((prev) => [newFile, ...prev]);
 
       toast({
-        title: 'File uploaded successfully',
-        description: 'Your file has been processed and summarized.',
+        title: 'Resume uploaded successfully',
+        description: 'Your resume has been processed and summarized.',
       });
     } catch (error) {
       console.error('Error uploading file:', error);
       toast({
         title: 'Upload failed',
-        description: 'Failed to upload and process the file. Please try again.',
+        description: 'Failed to upload and process the resume. Please try again.',
         variant: 'destructive',
       });
     } finally {
@@ -77,9 +83,9 @@ export default function Files() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold">File Management</h1>
+        <h1 className="text-3xl font-bold">Resume Management</h1>
         <p className="text-muted-foreground mt-2">
-          Upload and process your PDF and DOCX files for analysis and summarization.
+          Upload and process your PDF resume for analysis and summarization.
         </p>
       </div>
 
@@ -93,15 +99,22 @@ export default function Files() {
         >
           <div className="mx-auto max-w-md">
             <Upload className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Upload your files</h3>
+            <h3 className="text-lg font-semibold mb-2">Upload your resume</h3>
             <p className="text-sm text-muted-foreground mb-4">
-              Drag and drop your PDF or DOCX files here, or click to browse
+              Drag and drop your PDF resume here, or click to browse
             </p>
-            <button disabled={isUploading} className="btn btn-gradient transition-all">
-              {isUploading ? 'Processing...' : 'Choose Files'}
+            <button disabled={isUploading} className="btn btn-gradient transition-all flex items-center justify-center gap-2">
+              {isUploading ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Processing...
+                </>
+              ) : (
+                'Choose Files'
+              )}
             </button>
             <p className="text-xs text-muted-foreground mt-2">
-              Supported formats: PDF, DOCX (Max 10MB)
+              Supported formats: PDF (Max 10MB)
             </p>
           </div>
 
@@ -121,7 +134,7 @@ export default function Files() {
       {/* Uploaded Files */}
       {uploadedFiles.length > 0 && (
         <div>
-          <h2 className="text-xl font-semibold mb-6">Processed Files</h2>
+          <h2 className="text-xl font-semibold mb-6">Processed Resume</h2>
           <div className="space-y-4">
             {uploadedFiles.map((file, index) => (
               <div key={index} className="card transition-all shadow-elegant">
@@ -145,14 +158,12 @@ export default function Files() {
                     </div>
                   </div>
                 </div>
-                <div className="card-content">
-                  <div className="rounded-lg bg-muted p-4">
-                    <h4 className="font-medium mb-2">Summary:</h4>
-                    <div
-                      className="prose max-w-none text-sm text-muted-foreground"
-                      dangerouslySetInnerHTML={{ __html: marked.parse(file.summary) }}
-                    />
-                  </div>
+                <div className="rounded-lg bg-muted p-4">
+                  <h4 className="font-medium mb-2">Summary:</h4>
+                  <div
+                    className="prose max-w-none text-sm text-muted-foreground"
+                    dangerouslySetInnerHTML={{ __html: marked.parse(file.summary) }}
+                  />
                 </div>
               </div>
             ))}

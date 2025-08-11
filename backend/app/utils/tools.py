@@ -17,12 +17,16 @@ from app.state.file_state import file_state
 from typing import Optional
 from langchain_core.runnables import RunnableConfig
 from app.state.file_state import resume_store
+from .embedding_store import load_embedding, save_embedding
+from .rag_store import create_retriever_from_text
+from io import BytesIO
+import docx2txt
+from pdfminer.high_level import extract_text
+from fastapi import UploadFile
 
 from dotenv import load_dotenv
 load_dotenv()
-
-from dotenv import load_dotenv
-load_dotenv()
+USE_MOCK = False
 
 @tool
 def get_current_datetime(dummy_input: str) -> str:
@@ -44,55 +48,77 @@ llm = ChatOpenAI(
     model="gpt-4-turbo",  
     openai_api_key=os.getenv("OPENAI_API_KEY"),
     openai_api_base=os.getenv("OPENAI_BASE_URL"),
-    temperature=0.5,
+    temperature=0.7,
 )
 
+print("USE_MOCK =", USE_MOCK)
 @tool
 def summarize_text(text: str) -> str:
+
     """
-    Summarizes resume-like text into clean Markdown format with proper headers and bullet points.
+    Summarizes resume text using GPT and formats it in clean Markdown with clear sections:
+    Name, Contact, LinkedIn, Education, Experience, Projects, Technical Skills.
+    Uses cache if summary already exists.
     """
+    if USE_MOCK:
+        print("MOCK MODE ACTIVE — skipping OpenRouter call.")
+        return "This is a mock summary of the resume."
+
+ 
+    cached = load_embedding(text)
+    if cached:
+        return cached
+
     try:
         llm = ChatOpenAI(
             model="gpt-4-turbo",
             temperature=0.2,
             openai_api_key=os.getenv("OPENAI_API_KEY"),
             openai_api_base=os.getenv("OPENAI_BASE_URL"),
-            timeout=30  # <-- ⏱ Add timeout here (seconds)
+            timeout=30
         )
 
         prompt = ChatPromptTemplate.from_template("""
-You are an expert resume formatter.
+    You are an expert resume summarizer and formatter.
 
-Format the following resume content in clean **Markdown** with these **section headers**:
+    Your task is to read raw resume content and generate a clean, **concise summary** in **Markdown format**, using the following **section headers**:
 
-## 👤 Name & Contact  
-## 🔗 LinkedIn  
-## 🎓 Education  
-## 💼 Experience  
-## 💻 Projects  
-## 🛠️ Technical Skills
+    ## Name & Contact
+    ## Mail                                              
+    ## LinkedIn  
+    ## Education  
+    ## Experience  
+    ## Projects  
+    ## Technical Skills
 
-**Instructions:**
-- Use **bold titles** and bullet points.
-- One line per bullet.
-- Add line breaks between sections.
-- No explanations, just the Markdown output.
+    **Instructions:**
+    - Summarize long paragraphs into short bullet points.
+    - Be concise but retain key achievements, skills, and experiences.
+    - Use **bold titles** and bullet points (one line per bullet).
+    - Extract LinkedIn URL from the resume and place it under the 'LinkedIn' section.
+    - Add line breaks between sections.
+    - No explanation, no front-matter — return only the Markdown.
 
-Resume:
-{text}
-""")
+    Resume:
+    {text}
+    """)
+
 
         chain: Runnable = prompt | llm
 
-        print("✅ Starting summary generation...")
-        response = llm.invoke(f"Summarize the following resume in a structured bullet point format:\n\n{text}")
-        print("✅ Summary generation complete.")
-        return response.content if hasattr(response, 'content') else str(response)
+        print("Starting summary generation...")
+        response = chain.invoke({"text": text})
+        result = response.content if hasattr(response, 'content') else str(response)
+
+        print("Summary generation complete.")
+        # Save result to cache
+        save_embedding(text, result)
+        return result
 
     except Exception as e:
-        print("🔥 Error during summarization:", str(e))
+        print("Error during summarization:", str(e))
         return f"Error in summarization: {str(e)}"
+
 
 
 @tool
@@ -108,12 +134,12 @@ def scrape_website(url: str) -> str:
         response = requests.get(url, timeout=5)
         soup = BeautifulSoup(response.content, "html.parser")
 
-        # Remove script/style content
+       
         for tag in soup(["script", "style"]):
             tag.decompose()
 
         text = soup.get_text(separator=' ', strip=True)
-        safe_limit = min(len(text), 8000)  # To avoid index errors
+        safe_limit = min(len(text), 3000)  
         return f"Website content from {url}:\n\n{text[:safe_limit]}..."
 
     except Exception as e:
@@ -203,15 +229,46 @@ def parse_resume(session_id: str) -> dict:
 
 
 
-
-SCOPES = ["https://www.googleapis.com/auth/documents", "https://www.googleapis.com/auth/drive"]
 @tool
-def save_to_google_docs(summary: str) -> str:
-    """Saves the given summary to a new Google Doc and returns the document link."""
+def parse_resume_rag(file_bytes_b64: str, session_id: str = "default_session") -> str:
+    """Extracts and saves resume content for later Q&A from a base64 string."""
+    import base64
+    from io import BytesIO
+    from pdfminer.high_level import extract_text
+    import docx2txt
+
+    try:
+        file_bytes = base64.b64decode(file_bytes_b64)
+        ext = "pdf" 
+
+        if ext == "pdf":
+            text = extract_text(BytesIO(file_bytes))
+        elif ext in ["doc", "docx"]:
+            text = docx2txt.process(BytesIO(file_bytes))
+        else:
+            return "Unsupported file type"
+
+        create_retriever_from_text(session_id, text)
+        summary = summarize_text(text)
+        return f"Resume parsed and saved. Summary:\n{summary}"
+
+    except Exception as e:
+        return f"Error parsing resume: {str(e)}"
+
+
+SCOPES = [
+    "https://www.googleapis.com/auth/documents",
+    "https://www.googleapis.com/auth/drive.file"
+]
+
+@tool
+def save_to_google_docs(content: str) -> str:
+    """Saves the given content to a new Google Doc and returns the doc link."""
 
     creds = None
     creds_path = os.path.join("app", "config", "credentials.json")
-
+    
+    
     if os.path.exists("token.json"):
         creds = Credentials.from_authorized_user_file("token.json", SCOPES)
     else:
@@ -221,30 +278,27 @@ def save_to_google_docs(summary: str) -> str:
             token.write(creds.to_json())
 
     # Create Google Docs API service
-    docs_service = build('docs', 'v1', credentials=creds)
-    drive_service = build('drive', 'v3', credentials=creds)
+    service = build('docs', 'v1', credentials=creds)
 
     # Create the document
-    doc = docs_service.documents().create(body={"title": "AI Assistant Summary"}).execute()
+    doc = service.documents().create(body={"title": "AI Assistant Summary"}).execute()
     doc_id = doc.get('documentId')
 
-    # Insert summary text
-    docs_service.documents().batchUpdate(
+    # Insert text into the document
+    service.documents().batchUpdate(
         documentId=doc_id,
         body={
             'requests': [
-                {'insertText': {'location': {'index': 1}, 'text': summary}}
+                {'insertText': {
+                    'location': {'index': 1},
+                    'text': content
+                }}
             ]
         }
     ).execute()
 
-    # Make document public
-    drive_service.permissions().create(
-        fileId=doc_id,
-        body={"role": "reader", "type": "anyone"},
-    ).execute()
-
-    return f"✅ Summary saved to Google Docs: [View document](https://docs.google.com/document/d/{doc_id}/edit)"
+    # Return the document link
+    return f"https://docs.google.com/document/d/{doc_id}/edit"
 
 
 
@@ -280,7 +334,7 @@ def handle_resume_workflow(session_id: str) -> str:
             })
 
         full_text = json.dumps(parsed_data, indent=2)
-        summary = summarize_text(full_text)
+        summary = "🧪 Mock summary for resume." if USE_MOCK else summarize_text(full_text)
         doc_link = save_to_google_docs(summary)
 
         result = {
@@ -317,6 +371,7 @@ tools =[
     get_calendar_events,
     clear_memory,
     parse_resume,
+    parse_resume_rag,
     save_to_google_docs,
     handle_resume_workflow,
     scrape_and_summarize

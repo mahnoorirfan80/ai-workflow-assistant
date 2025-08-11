@@ -4,7 +4,7 @@ import {
   MessageCircle, 
   FileText, 
   Workflow, 
-  Settings,
+  // Settings,
   Brain
 } from 'lucide-react';
 
@@ -13,7 +13,7 @@ const navigation = [
   { name: 'Chat', href: '/chat', icon: MessageCircle },
   { name: 'Files', href: '/files', icon: FileText },
   { name: 'Email', href: '/email', icon: Workflow },
-  { name: 'Settings', href: '/settings', icon: Settings },
+  // { name: 'Settings', href: '/settings', icon: Settings },
 ];
 
 export default function Sidebar() {

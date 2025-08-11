@@ -1,10 +1,10 @@
 import axios from 'axios';
 
-// Configure your backend base URL here
-const API_BASE_URL = 'http://localhost:8000'; 
+
+const baseURL = import.meta.env.VITE_API_URL;
 
 const api = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -19,13 +19,18 @@ export interface SendMessageResponse {
 }
 
 export interface UploadResumeResponse {
+  message: string;
+  session_id: string;
+  filename: string;
   summary: string;
+  google_docs_link: string; 
 }
+
 
 // Send message to the AI agent
 export const sendMessage = async (prompt: string, sessionId: string): Promise<SendMessageResponse> => {
   const response = await api.post<SendMessageResponse>('/ask-agent/', {
-     input: prompt,            
+    input: prompt,            
     session_id: sessionId, 
   });
   return response.data;

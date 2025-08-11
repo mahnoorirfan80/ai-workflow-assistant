@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { Mail, Sparkles, Copy } from 'lucide-react';
-import { sendMessage } from '@/services/api';
+import { sendMessage } from '../services/api';
 import { useToast } from '@/hooks/use-toast';
 
 export default function Email() {
@@ -98,7 +98,7 @@ export default function Email() {
             <button
               onClick={handleGenerateEmail}
               disabled={isGenerating || !bulletPoints.trim()}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded transition"
+              className="bg-indigo-500 hover:bg-blue-700 text-black !text-black font-medium py-2 px-4 rounded transition shadow-none"
             >
               {isGenerating ? 'Generating...' : (
                 <>

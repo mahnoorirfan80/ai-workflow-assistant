@@ -1,9 +1,8 @@
-/* Import our custom CSS files */
+/* Import custom CSS files */
 @import './styles/globals.css';
 @import './styles/layout.css';
 @import './styles/components.css';
 
-/* src/index.css */
 body {
   font-family: Arial, sans-serif;
   margin: 0;

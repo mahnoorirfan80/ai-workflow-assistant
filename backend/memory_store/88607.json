@@ -1,0 +1,29 @@
+[
+  {
+    "type": "human",
+    "data": {
+      "content": "Generate a professional email using these bullet points:\n\nemail for annual leave\n\nPlease create a well-structured, formal email with appropriate greeting, body, and closing.",
+      "additional_kwargs": {},
+      "response_metadata": {},
+      "type": "human",
+      "name": null,
+      "id": null,
+      "example": false
+    }
+  },
+  {
+    "type": "ai",
+    "data": {
+      "content": "Subject: Request for Annual Leave\n\nDear [Recipient's Name],\n\nI hope this message finds you well. I am writing to formally request annual leave. I would like to take this opportunity to recharge and spend some quality time with my family, which I believe will help me return to work with renewed energy and focus.\n\nI am planning to be away from [start date] to [end date]. During this period, I have ensured that all my current projects are at a stage where they can either be paused or easily handled by my colleagues. I have prepared a detailed handover document that outlines the status of my projects, upcoming deadlines, and key contacts. This document has been shared with my team to ensure a smooth transition in my absence.\n\nPlease let me know if there are any forms or additional details I need to provide to facilitate the approval process. I am flexible with the dates and can adjust them according to the team's needs and project timelines.\n\nThank you for considering my request. I look forward to your approval.\n\nWarm regards,\n\n[Your Name]  \n[Your Job Title]  \n[Your Contact Information]  \n\nPlease replace placeholders like [Recipient's Name], [start date], [end date], [Your Name], [Your Job Title], and [Your Contact Information] with the actual details to personalize this email.",
+      "additional_kwargs": {},
+      "response_metadata": {},
+      "type": "ai",
+      "name": null,
+      "id": null,
+      "example": false,
+      "tool_calls": [],
+      "invalid_tool_calls": [],
+      "usage_metadata": null
+    }
+  }
+]
