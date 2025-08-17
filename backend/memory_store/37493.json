@@ -1,0 +1,29 @@
+[
+  {
+    "type": "human",
+    "data": {
+      "content": "Generate a professional email using these points:\n\n.schedule a meeting for next week\n\nPlease create a well-structured, formal email with appropriate greeting, body, and closing.",
+      "additional_kwargs": {},
+      "response_metadata": {},
+      "type": "human",
+      "name": null,
+      "id": null,
+      "example": false
+    }
+  },
+  {
+    "type": "ai",
+    "data": {
+      "content": "Here's a professional email template based on the points you provided:\n\n---\n\nSubject: Proposal for Meeting Next Week\n\nDear [Recipient's Name],\n\nI hope this message finds you well. I am writing to propose a meeting next week at your earliest convenience to discuss ongoing projects and next steps. I believe a face-to-face meeting would be the most effective way to ensure we are aligned and to address any immediate questions or concerns.\n\nPlease let me know your available times, and I will do my best to accommodate. I am looking forward to our discussion and am eager to explore ways we can continue to drive success together.\n\nThank you for considering this request. I appreciate your time and attention.\n\nBest regards,\n\n[Your Name]  \n[Your Position]  \n[Your Contact Information]\n\n--- \n\nPlease replace placeholders like [Recipient's Name], [Your Name], [Your Position], and [Your Contact Information] with the actual details to personalize your email.",
+      "additional_kwargs": {},
+      "response_metadata": {},
+      "type": "ai",
+      "name": null,
+      "id": null,
+      "example": false,
+      "tool_calls": [],
+      "invalid_tool_calls": [],
+      "usage_metadata": null
+    }
+  }
+]

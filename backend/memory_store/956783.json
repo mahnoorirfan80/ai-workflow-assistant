@@ -1,0 +1,29 @@
+[
+  {
+    "type": "human",
+    "data": {
+      "content": "Summarize the following resume:\n\nSamira AlcarazMechanical EngineerPhone: +123-456-7890Email: hello@reallygreatsite.comCONTACTGPA: 3.8Editor-in-Chief, SCC NewsletterPresident, The Innovation SocietyAssisted in optimizing mechanical systems for manufacturing processes, improvingproduction speed by 20%PROFESSIONALEXPERIENCEEDUCATIONCERTIFICATESThe Innovation Lab Master of Science in Mechanical EngineeringBachelor of Science in Mechanical EngineeringScience and Tech Co. Research and Development Engineer | 2030-2035North State University | 2025-2027South City College | 2021-2025Mechanical Engineer | 2027-2030Project Management | 2027The Project Management InstituteRisk Management and Mitigation | 2028Internal Auditors Team",
+      "additional_kwargs": {},
+      "response_metadata": {},
+      "type": "human",
+      "name": null,
+      "id": null,
+      "example": false
+    }
+  },
+  {
+    "type": "ai",
+    "data": {
+      "content": "Here is the summarized resume for Samira Alcaraz:\n\n### Name & Contact\n- **Name:** Samira Alcaraz\n- **Phone:** +123-456-7890\n\n### Email\n- **Email:** hello@reallygreatsite.com\n\n### Education\n- **Master of Science in Mechanical Engineering**, North State University, 2025-2027\n- **Bachelor of Science in Mechanical Engineering**, South City College, 2021-2025\n- **GPA:** 3.8\n\n### Experience\n- **Research and Development Engineer**, Science and Tech Co., 2030-2035\n  - Focused on optimizing mechanical systems, improving production speed by 20%.\n- **Mechanical Engineer**, The Innovation Lab, 2027-2030\n\n### Projects\n- **Editor-in-Chief**, SCC Newsletter\n- **President**, The Innovation Society\n\n### Technical Skills\n- **Project Management**, Certified in 2027\n- **Risk Management and Mitigation**, Certified in 2028\n\nThis summary outlines Samira's educational background, professional experience, leadership roles in projects, and her technical certifications.",
+      "additional_kwargs": {},
+      "response_metadata": {},
+      "type": "ai",
+      "name": null,
+      "id": null,
+      "example": false,
+      "tool_calls": [],
+      "invalid_tool_calls": [],
+      "usage_metadata": null
+    }
+  }
+]

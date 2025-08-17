@@ -1,0 +1,56 @@
+[
+  {
+    "type": "human",
+    "data": {
+      "content": "Tell me the latest news in tech",
+      "additional_kwargs": {},
+      "response_metadata": {},
+      "type": "human",
+      "name": null,
+      "id": null,
+      "example": false
+    }
+  },
+  {
+    "type": "ai",
+    "data": {
+      "content": "I don't have direct access to current news feeds or databases. However, you can check the latest news in tech by visiting popular technology news websites such as TechCrunch, Wired, or The Verge. These sites are frequently updated with the latest developments and trends in the technology sector.",
+      "additional_kwargs": {},
+      "response_metadata": {},
+      "type": "ai",
+      "name": null,
+      "id": null,
+      "example": false,
+      "tool_calls": [],
+      "invalid_tool_calls": [],
+      "usage_metadata": null
+    }
+  },
+  {
+    "type": "human",
+    "data": {
+      "content": "Generate a daily to-do list",
+      "additional_kwargs": {},
+      "response_metadata": {},
+      "type": "human",
+      "name": null,
+      "id": null,
+      "example": false
+    }
+  },
+  {
+    "type": "ai",
+    "data": {
+      "content": "Creating a daily to-do list can help you organize and prioritize your tasks efficiently. Here\u2019s a sample daily to-do list that you can customize based on your specific needs:\n\n1. **Morning Routine:**\n   - Wake up by 7:00 AM.\n   - Exercise for 30 minutes.\n   - Have a healthy breakfast.\n\n2. **Work Tasks:**\n   - Check emails and respond to urgent ones by 9:00 AM.\n   - Attend the scheduled team meeting at 10:00 AM.\n   - Work on the project report due by the end of the week.\n   - Follow up on client feedback from yesterday.\n\n3. **Lunch Break:**\n   - Take a lunch break from 12:30 PM to 1:30 PM.\n   - Brief walk after lunch for relaxation.\n\n4. **Afternoon Tasks:**\n   - Review and update the project timeline.\n   - Conduct a 30-minute brainstorming session with the team on new ideas.\n   - Prepare materials for tomorrow's presentation.\n\n5. **Evening Routine:**\n   - Review the day\u2019s accomplishments and plan for the next day.\n   - Dinner by 7:00 PM.\n   - Spend time with family or relax with a book or TV show.\n\n6. **Personal Development:**\n   - Spend 30 minutes on professional development (reading, online courses, etc.).\n   - Journal or plan personal goals for 15 minutes before bed.\n\nFeel free to adjust the times and tasks according to what suits your schedule and priorities best!",
+      "additional_kwargs": {},
+      "response_metadata": {},
+      "type": "ai",
+      "name": null,
+      "id": null,
+      "example": false,
+      "tool_calls": [],
+      "invalid_tool_calls": [],
+      "usage_metadata": null
+    }
+  }
+]

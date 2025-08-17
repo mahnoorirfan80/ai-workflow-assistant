@@ -1,0 +1,29 @@
+[
+  {
+    "type": "human",
+    "data": {
+      "content": "what is a chatbot?",
+      "additional_kwargs": {},
+      "response_metadata": {},
+      "type": "human",
+      "name": null,
+      "id": null,
+      "example": false
+    }
+  },
+  {
+    "type": "ai",
+    "data": {
+      "content": "A chatbot is a software application designed to simulate conversation with human users, especially over the Internet. Chatbots are commonly used for various purposes such as customer service, information acquisition, or for entertainment. They can operate via text, voice, or both, and are implemented on websites, mobile apps, and through messaging platforms.\n\nChatbots use a combination of pre-programmed scripts and various forms of artificial intelligence technologies, including natural language processing (NLP) and machine learning (ML), to understand and respond to user inputs. They can handle a wide range of tasks, from answering FAQs to booking appointments, and they are increasingly sophisticated in handling nuanced human language.",
+      "additional_kwargs": {},
+      "response_metadata": {},
+      "type": "ai",
+      "name": null,
+      "id": null,
+      "example": false,
+      "tool_calls": [],
+      "invalid_tool_calls": [],
+      "usage_metadata": null
+    }
+  }
+]

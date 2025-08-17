@@ -1,5 +1,6 @@
+
 import { useState, useRef } from 'react';
-import { Upload, FileText, CheckCircle, Loader2 } from 'lucide-react';
+import { Upload, FileText, CheckCircle, Loader2, X } from 'lucide-react';
 import { uploadResume } from '../services/api';
 import { useToast } from '@/hooks/use-toast';
 import { marked } from 'marked';
@@ -14,6 +15,8 @@ interface UploadedFile {
 export default function Files() {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [saveToDocs, setSaveToDocs] = useState(true);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -27,33 +30,48 @@ export default function Files() {
     if (!allowedTypes.includes(file.type)) {
       toast({
         title: 'Invalid file type',
-        description: 'Please upload only PDF resume.',
+        description: 'Please upload only PDF or DOCX resumes.',
         variant: 'destructive',
       });
       return;
     }
 
     setIsUploading(true);
+    setSelectedFile(file);
 
     try {
-      const response = await uploadResume(file);
+      
+      const response = await uploadResume(file, saveToDocs);
 
-      const summaryWithLink = response.google_docs_link
-        ? `🔗 [View summary on Google Docs](${response.google_docs_link})\n\n${response.summary}`
-        : response.summary;
+      // If docs link is present, prepend it, otherwise just summary
+      const summaryWithLink =
+        saveToDocs && response.google_docs_link
+          ? `[View summary on Google Docs](${response.google_docs_link})\n\n${response.summary}`
+          : response.summary;
+
+      // const newFile: UploadedFile = {
+      //   name: file.name,
+      //   summary: summaryWithLink,
+      //   uploadedAt: new Date(),
+      //   googleDocsLink: response.google_docs_link,
+      // };
 
       const newFile: UploadedFile = {
-        name: file.name,
-        summary: summaryWithLink,
-        uploadedAt: new Date(),
-        googleDocsLink: response.google_docs_link,
-      };
+      name: file.name,
+      summary: response.summary,          // ← no markdown link here
+      uploadedAt: new Date(),
+      googleDocsLink: response.google_docs_link,
+    };
+
 
       setUploadedFiles((prev) => [newFile, ...prev]);
+      setSelectedFile(null);
 
       toast({
         title: 'Resume uploaded successfully',
-        description: 'Your resume has been processed and summarized.',
+        description: saveToDocs
+          ? 'Your resume has been processed and saved to Google Docs.'
+          : 'Your resume has been processed.',
       });
     } catch (error) {
       console.error('Error uploading file:', error);
@@ -67,12 +85,15 @@ export default function Files() {
     }
   };
 
+  const handleCancelUpload = () => {
+    setSelectedFile(null);
+    setIsUploading(false);
+  };
+
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
-    if (file) {
-      handleFileUpload(file);
-    }
+    if (file) handleFileUpload(file);
   };
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -83,10 +104,24 @@ export default function Files() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold">Resume Management</h1>
+        <h1 className="text-3xl font-bold">Resume Summariser</h1>
         <p className="text-muted-foreground mt-2">
-          Upload and process your PDF resume for analysis and summarization.
+          Upload and process your PDF or Docx resume for analysis and summarization.
         </p>
+      </div>
+
+      {/* Toggle Save to Docs */}
+      <div className="flex items-center gap-2">
+        <input
+          id="save-docs"
+          type="checkbox"
+          checked={saveToDocs}
+          onChange={() => setSaveToDocs(!saveToDocs)}
+          className="h-4 w-4"
+        />
+        <label htmlFor="save-docs" className="text-sm">
+          Save processed summary to Google Docs
+        </label>
       </div>
 
       {/* Upload Area */}
@@ -101,9 +136,12 @@ export default function Files() {
             <Upload className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
             <h3 className="text-lg font-semibold mb-2">Upload your resume</h3>
             <p className="text-sm text-muted-foreground mb-4">
-              Drag and drop your PDF resume here, or click to browse
+              Drag and drop your PDF or Docx resume here, or click to browse
             </p>
-            <button disabled={isUploading} className="btn btn-gradient transition-all flex items-center justify-center gap-2">
+            <button
+              disabled={isUploading}
+              className="btn btn-gradient transition-all flex items-center justify-center gap-2"
+            >
               {isUploading ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -114,7 +152,7 @@ export default function Files() {
               )}
             </button>
             <p className="text-xs text-muted-foreground mt-2">
-              Supported formats: PDF (Max 10MB)
+              Supported formats: PDF, Docx(Max 10MB)
             </p>
           </div>
 
@@ -130,6 +168,16 @@ export default function Files() {
           />
         </div>
       </div>
+
+      {/* Selected File During Upload */}
+      {selectedFile && (
+        <div className="border p-4 rounded flex items-center justify-between bg-gray-50">
+          <span>{selectedFile.name} is being processed…</span>
+          <button onClick={handleCancelUpload} className="text-red-500 flex items-center gap-1">
+            <X className="h-4 w-4" /> Cancel
+          </button>
+        </div>
+      )}
 
       {/* Uploaded Files */}
       {uploadedFiles.length > 0 && (
@@ -160,6 +208,16 @@ export default function Files() {
                 </div>
                 <div className="rounded-lg bg-muted p-4">
                   <h4 className="font-medium mb-2">Summary:</h4>
+                  {file.googleDocsLink && (
+                    <a
+                      href={file.googleDocsLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-blue-600 underline mb-3"
+                    >
+                      View summary on Google Docs ↗
+                    </a>
+                  )}
                   <div
                     className="prose max-w-none text-sm text-muted-foreground"
                     dangerouslySetInnerHTML={{ __html: marked.parse(file.summary) }}

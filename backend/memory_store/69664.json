@@ -1,0 +1,29 @@
+[
+  {
+    "type": "human",
+    "data": {
+      "content": "name some of the most famous llm based chatbots",
+      "additional_kwargs": {},
+      "response_metadata": {},
+      "type": "human",
+      "name": null,
+      "id": null,
+      "example": false
+    }
+  },
+  {
+    "type": "ai",
+    "data": {
+      "content": "Some of the most famous large language model (LLM) based chatbots include:\n\n1. **ChatGPT** - Developed by OpenAI, it's built on top of GPT (Generative Pre-trained Transformer) models. ChatGPT is known for its ability to generate human-like text based on the prompt it receives.\n\n2. **Google's LaMDA** (Language Model for Dialogue Applications) - This is Google's conversational AI that can engage in a free-flowing way about a seemingly endless number of topics.\n\n3. **Microsoft's Turing-NLG** - A 17 billion parameter language model by Microsoft that has been trained to perform a variety of language tasks.\n\n4. **Meta's BlenderBot** - Facebook AI (now Meta) developed BlenderBot, which aims to blend a diverse set of conversational skills, including empathy, knowledge, and personality, into a single system.\n\n5. **Amazon's Alexa** - While primarily known as a virtual assistant, Alexa utilizes LLM techniques for understanding and generating human-like responses for user interactions.\n\n6. **Baidu's ERNIE** (Enhanced Representation through kNowledge Integration) - This is a conversational AI developed by Baidu, which is designed to understand and generate natural language text.\n\n7. **IBM's Watson Assistant** - Utilizes advanced natural language processing capabilities to understand complex questions and provide detailed responses.\n\nThese bots leverage the power of large language models to understand context, generate responses, and sometimes even learn from interactions to improve over time.",
+      "additional_kwargs": {},
+      "response_metadata": {},
+      "type": "ai",
+      "name": null,
+      "id": null,
+      "example": false,
+      "tool_calls": [],
+      "invalid_tool_calls": [],
+      "usage_metadata": null
+    }
+  }
+]

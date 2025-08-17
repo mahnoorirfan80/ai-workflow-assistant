@@ -38,10 +38,11 @@ export const sendMessage = async (prompt: string, sessionId: string): Promise<Se
 };
 
 // Upload resume for parsing
-export const uploadResume = async (file: File): Promise<UploadResumeResponse> => {
+export const uploadResume = async (file: File, saveToDocs: boolean): Promise<UploadResumeResponse> => {
   const formData = new FormData();
   formData.append('file', file);
-  
+  formData.append('save_to_google_docs', String(saveToDocs)); 
+
   const response = await api.post<UploadResumeResponse>('/upload-resume/', formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
@@ -49,5 +50,4 @@ export const uploadResume = async (file: File): Promise<UploadResumeResponse> =>
   });
   return response.data;
 };
-
 export default api;

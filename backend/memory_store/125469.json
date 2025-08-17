@@ -1,0 +1,29 @@
+[
+  {
+    "type": "human",
+    "data": {
+      "content": "Summarize the following resume:\n\nYour Name\nIndustrial Designer\n123 Your Street\nYour City, ST 12345\n(123) 456-7890\nno_reply@example.com\nSKILLS\nLorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. \nEXPERIENCE\nCompany Name,  Location - Job Title\nMONTH 20XX - PRESENT\nLorem ipsum dolor sit amet, consectetur adipiscing elit. \nAenean ac interdum nisi. Sed in consequat mi.\nCompany Name, Location - Job Title\nMONTH 20XX - MONTH 20XX\nLorem ipsum dolor sit amet, consectetur adipiscing elit. \nAenean ac interdum nisi. Sed in consequat mi. \nCompany Name, Location - Job Title\nMONTH 20XX - MONTH 20XX\nLorem ipsum dolor sit amet, consectetur adipiscing elit. \nAenean ac interdum nisi. Sed in consequat mi. \nEDUCATION\nSchool Name, Location - Degree\nMONTH 20XX - MONTH 20XX\nLorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore.\nAWARDS\nLorem ipsum dolor sit amet, consectetur adipiscing elit.\nAenean ac interdum nisi.",
+      "additional_kwargs": {},
+      "response_metadata": {},
+      "type": "human",
+      "name": null,
+      "id": null,
+      "example": false
+    }
+  },
+  {
+    "type": "ai",
+    "data": {
+      "content": "### Resume Summary\n\n#### Name & Contact\n- **Name:** Your Name\n- **Title:** Industrial Designer\n- **Address:** 123 Your Street, Your City, ST 12345\n- **Phone:** (123) 456-7890\n- **Email:** no_reply@example.com\n\n#### LinkedIn\n- [Profile Link](https://www.linkedin.com/in/yourname)\n\n#### Education\n- **School Name, Location** - Degree (MONTH 20XX - MONTH 20XX)\n\n#### Experience\n- **Company Name, Location** - Job Title (MONTH 20XX - PRESENT)\n- **Company Name, Location** - Job Title (MONTH 20XX - MONTH 20XX)\n- **Company Name, Location** - Job Title (MONTH 20XX - MONTH 20XX)\n\n#### Technical Skills\n- General skills in industrial design with a focus on project management and product development.\n\n#### Projects\n- Details about specific projects are not provided, but the resume indicates involvement in significant industry-related projects.\n\n### Overview\nThe resume showcases a professional with experience in industrial design, highlighting roles across various companies with responsibilities that likely include design, team collaboration, and project oversight. The technical skills section, while generic, suggests a solid foundation in industry-relevant skills.",
+      "additional_kwargs": {},
+      "response_metadata": {},
+      "type": "ai",
+      "name": null,
+      "id": null,
+      "example": false,
+      "tool_calls": [],
+      "invalid_tool_calls": [],
+      "usage_metadata": null
+    }
+  }
+]

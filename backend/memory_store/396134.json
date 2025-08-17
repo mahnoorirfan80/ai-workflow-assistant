@@ -1,0 +1,29 @@
+[
+  {
+    "type": "human",
+    "data": {
+      "content": "Summarize the following resume:\n\nSamira AlcarazMechanical EngineerPhone: +123-456-7890Email: hello@reallygreatsite.comCONTACTGPA: 3.8Editor-in-Chief, SCC NewsletterPresident, The Innovation SocietyAssisted in optimizing mechanical systems for manufacturing processes, improvingproduction speed by 20%PROFESSIONALEXPERIENCEEDUCATIONCERTIFICATESThe Innovation Lab Master of Science in Mechanical EngineeringBachelor of Science in Mechanical EngineeringScience and Tech Co. Research and Development Engineer | 2030-2035North State University | 2025-2027South City College | 2021-2025Mechanical Engineer | 2027-2030Project Management | 2027The Project Management InstituteRisk Management and Mitigation | 2028Internal Auditors Team",
+      "additional_kwargs": {},
+      "response_metadata": {},
+      "type": "human",
+      "name": null,
+      "id": null,
+      "example": false
+    }
+  },
+  {
+    "type": "ai",
+    "data": {
+      "content": "### Resume Summary for Samira Alcaraz\n\n#### Name & Contact\n- **Name:** Samira Alcaraz\n- **Profession:** Mechanical Engineer\n- **Phone:** +123-456-7890\n- **Email:** hello@reallygreatsite.com\n\n#### Education\n- **Master of Science in Mechanical Engineering** from North State University (2025-2027)\n- **Bachelor of Science in Mechanical Engineering** from South City College (2021-2025)\n  - GPA: 3.8\n  - Roles: Editor-in-Chief, SCC Newsletter; President, The Innovation Society\n\n#### Professional Experience\n- **Science and Tech Co.**\n  - Role: Research and Development Engineer (2030-2035)\n- **Mechanical Engineer** (2027-2030)\n  - Achievements: Assisted in optimizing mechanical systems for manufacturing processes, improving production speed by 20%\n\n#### Projects\n- **Internal Auditors Team**\n  - Focus: Risk Management and Mitigation\n\n#### Certifications\n- **Project Management** (2027) from The Project Management Institute\n- **Risk Management and Mitigation** (2028)\n\n#### Technical Skills\n- Project Management\n- Risk Management\n\nSamira Alcaraz is a skilled Mechanical Engineer with a strong educational background and significant professional experience in research and development engineering. She has demonstrated abilities in optimizing mechanical systems and is certified in project management and risk mitigation.",
+      "additional_kwargs": {},
+      "response_metadata": {},
+      "type": "ai",
+      "name": null,
+      "id": null,
+      "example": false,
+      "tool_calls": [],
+      "invalid_tool_calls": [],
+      "usage_metadata": null
+    }
+  }
+]

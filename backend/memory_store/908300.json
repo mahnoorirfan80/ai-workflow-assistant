@@ -1,0 +1,29 @@
+[
+  {
+    "type": "human",
+    "data": {
+      "content": "Summarize the following resume:\n\nYour Name\nIndustrial Designer\n123 Your Street\nYour City, ST 12345\n(123) 456-7890\nno_reply@example.com\nSKILLS\nLorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. \nEXPERIENCE\nCompany Name,  Location - Job Title\nMONTH 20XX - PRESENT\nLorem ipsum dolor sit amet, consectetur adipiscing elit. \nAenean ac interdum nisi. Sed in consequat mi.\nCompany Name, Location - Job Title\nMONTH 20XX - MONTH 20XX\nLorem ipsum dolor sit amet, consectetur adipiscing elit. \nAenean ac interdum nisi. Sed in consequat mi. \nCompany Name, Location - Job Title\nMONTH 20XX - MONTH 20XX\nLorem ipsum dolor sit amet, consectetur adipiscing elit. \nAenean ac interdum nisi. Sed in consequat mi. \nEDUCATION\nSchool Name, Location - Degree\nMONTH 20XX - MONTH 20XX\nLorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore.\nAWARDS\nLorem ipsum dolor sit amet, consectetur adipiscing elit.\nAenean ac interdum nisi.",
+      "additional_kwargs": {},
+      "response_metadata": {},
+      "type": "human",
+      "name": null,
+      "id": null,
+      "example": false
+    }
+  },
+  {
+    "type": "ai",
+    "data": {
+      "content": "Here is the summarized resume:\n\n### Name & Contact\n- **Name:** Your Name\n- **Title:** Industrial Designer\n- **Address:** 123 Your Street, Your City, ST 12345\n- **Phone:** (123) 456-7890\n- **Email:** no_reply@example.com\n\n### LinkedIn\n- [Your LinkedIn Profile](https://www.linkedin.com/in/yourname)\n\n### Education\n- **School Name, Location** - Degree (MONTH 20XX - MONTH 20XX)\n\n### Experience\n- **Company Name, Location** - Job Title (MONTH 20XX - PRESENT)\n- **Company Name, Location** - Job Title (MONTH 20XX - MONTH 20XX)\n- **Company Name, Location** - Job Title (MONTH 20XX - MONTH 20XX)\n\n### Technical Skills\n- Expertise in various technical and design aspects (specific skills not detailed).\n\n### Projects\n- Involved in significant projects showcasing skills in design and development.\n\n### Awards\n- Recognized for achievements in the field of industrial design.\n\nThis summary provides a clear outline of the individual\u2019s professional profile, educational background, and key skills.",
+      "additional_kwargs": {},
+      "response_metadata": {},
+      "type": "ai",
+      "name": null,
+      "id": null,
+      "example": false,
+      "tool_calls": [],
+      "invalid_tool_calls": [],
+      "usage_metadata": null
+    }
+  }
+]

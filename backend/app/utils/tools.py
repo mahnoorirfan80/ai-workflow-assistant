@@ -23,6 +23,9 @@ from io import BytesIO
 import docx2txt
 from pdfminer.high_level import extract_text
 from fastapi import UploadFile
+from google.auth.transport.requests import Request
+from googleapiclient.discovery import build
+
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -262,43 +265,70 @@ SCOPES = [
 ]
 
 @tool
-def save_to_google_docs(content: str) -> str:
-    """Saves the given content to a new Google Doc and returns the doc link."""
+def save_to_google_docs(summary: str) -> str:
+    """
+    Save a given summary text to a new Google Docs document.
+    """
+
+    # Ensure config folder exists
+    config_dir = os.path.join(os.path.dirname(__file__), "..", "config")
+    os.makedirs(config_dir, exist_ok=True)
+
+    creds_path = os.path.join(config_dir, "credentials.json")
+    token_path = os.path.join(config_dir, "token.json")
 
     creds = None
-    creds_path = os.path.join("app", "config", "credentials.json")
-    
-    
-    if os.path.exists("token.json"):
-        creds = Credentials.from_authorized_user_file("token.json", SCOPES)
-    else:
-        flow = InstalledAppFlow.from_client_secrets_file(creds_path, SCOPES)
-        creds = flow.run_local_server(port=0)
-        with open("token.json", "w") as token:
+
+    # Load token.json if available
+    if os.path.exists(token_path):
+        creds = Credentials.from_authorized_user_file(token_path, SCOPES)
+
+    # If no creds or invalid, go through OAuth
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            if not os.path.exists(creds_path):
+                return "Google API credentials.json not found in app/config/"
+            flow = InstalledAppFlow.from_client_secrets_file(creds_path, SCOPES)
+            creds = flow.run_local_server(port=0)
+        # Save new token.json in app/config/
+        with open(token_path, "w") as token:
             token.write(creds.to_json())
 
-    # Create Google Docs API service
-    service = build('docs', 'v1', credentials=creds)
+    try:
+        service = build("docs", "v1", credentials=creds, cache_discovery=False)
 
-    # Create the document
-    doc = service.documents().create(body={"title": "AI Assistant Summary"}).execute()
-    doc_id = doc.get('documentId')
+        # Create a new document
+        document = service.documents().create(body={"title": "AI Workflow Summary"}).execute()
+        doc_id = document.get("documentId")
 
-    # Insert text into the document
-    service.documents().batchUpdate(
-        documentId=doc_id,
-        body={
-            'requests': [
-                {'insertText': {
-                    'location': {'index': 1},
-                    'text': content
-                }}
-            ]
+        # After creating document
+        permissions = {
+            "role": "reader",
+            "type": "anyone"
         }
-    ).execute()
+        
 
-    # Return the document link
-    return f"https://docs.google.com/document/d/{doc_id}/edit"
+        # Insert summary text into the document
+        requests_body = [
+            {"insertText": {"location": {"index": 1}, "text": summary}}
+        ]
+        service.documents().batchUpdate(documentId=doc_id, body={"requests": requests_body}).execute()
+
+        
+        # Build Drive API client
+        drive_service = build("drive", "v3", credentials=creds, cache_discovery=False)
+        drive_service.permissions().create(
+            fileId=doc_id,
+            body={"role": "reader", "type": "anyone"}
+        ).execute()
+
+        return f"https://docs.google.com/document/d/{doc_id}/edit"
+
+
+    except Exception as e:
+        return f"Error saving to Google Docs: {str(e)}"
 
 
 
@@ -335,7 +365,8 @@ def handle_resume_workflow(session_id: str) -> str:
 
         full_text = json.dumps(parsed_data, indent=2)
         summary = "🧪 Mock summary for resume." if USE_MOCK else summarize_text(full_text)
-        doc_link = save_to_google_docs(summary)
+        #doc_link = save_to_google_docs(summary)
+        doc_link = save_to_google_docs.invoke({"summary": summary})
 
         result = {
             "parsed": parsed_data,

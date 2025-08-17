@@ -1,0 +1,29 @@
+[
+  {
+    "type": "human",
+    "data": {
+      "content": "Generate a professional email using these bullet points:\n\n.meeting for next week\n\nPlease create a well-structured, formal email with appropriate greeting, body, and closing.",
+      "additional_kwargs": {},
+      "response_metadata": {},
+      "type": "human",
+      "name": null,
+      "id": null,
+      "example": false
+    }
+  },
+  {
+    "type": "ai",
+    "data": {
+      "content": "Certainly! Here's a professional email draft based on your request for arranging a meeting next week:\n\n---\n\nSubject: Proposal for Meeting Next Week\n\nDear [Recipient's Name],\n\nI hope this message finds you well. I am writing to propose a meeting next week to discuss our ongoing projects and next steps. It would be a great opportunity to align our goals and ensure we are on track with our timelines.\n\nPlease let me know your availability for next week so we can schedule a convenient time for both parties. I am flexible with the timing and can adjust to fit within your preferred slots.\n\nLooking forward to your positive response and hoping to meet soon.\n\nBest regards,\n\n[Your Name]  \n[Your Position]  \n[Your Contact Information]  \n\n---\n\nPlease replace placeholders like [Recipient's Name], [Your Name], [Your Position], and [Your Contact Information] with the actual details to personalize your email.",
+      "additional_kwargs": {},
+      "response_metadata": {},
+      "type": "ai",
+      "name": null,
+      "id": null,
+      "example": false,
+      "tool_calls": [],
+      "invalid_tool_calls": [],
+      "usage_metadata": null
+    }
+  }
+]
