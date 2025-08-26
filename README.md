@@ -4,9 +4,8 @@
 **AI Workflow Assistant** is an intelligent productivity tool designed to automate common tasks such as **resume parsing, resume summarization, document saving, email generation, and web data extraction**.
 It combines LLMs, custom tools, and a modular workflow system to streamline real-world workflows in a single assistant interface.
 
-This project demonstrates how **AI agents** can be integrated with external APIs and user data to build practical assistants for everyday use.
+This project demonstrates how AI agents can be integrated with external APIs and user data to build practical assistants for everyday use.
 
----
 
 ## ✨ Features
 
@@ -87,7 +86,7 @@ cd ai-workflow-assistant/backend
 
 # Create virtual environment
 python -m venv venv
-venv\Scripts\activate      # (Windows)
+venv\Scripts\activate     
 
 # Install dependencies
 pip install -r requirements.txt
@@ -101,8 +100,6 @@ Start server:
 ```bash
 uvicorn app.main:app --reload
 ```
-
----
 
 ### 🔹 Frontend
 
