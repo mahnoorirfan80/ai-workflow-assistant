@@ -1,7 +1,4 @@
 # AI Workflow Assistant
-
----
-
 ## 📖 Overview
 
 **AI Workflow Assistant** is an intelligent productivity tool designed to automate common tasks such as **resume parsing, resume summarization, document saving, email generation, and web data extraction**.
@@ -13,16 +10,15 @@ This project demonstrates how **AI agents** can be integrated with external APIs
 
 ## ✨ Features
 
-* 🗂 **Resume Parser** – Upload `.pdf` / `.docx` resumes, automatically extract structured data.
-* 📝 **Summarization** – Generate concise summaries of extracted or scraped text from resumes.
-* 📄 **Google Docs Integration** – Save parsed resumes directly into Google Docs.
-* 📧 **Email Generation** – Automatically draft professional emails based on user input or workflow output.
-* 🌐 **Web Scraping Tool** – Extract and process website content for quick insights.
-* 💬 **Chat Interface** – Interact with the assistant in real time.
-* 🧠 **LLM-powered Workflows** – Built using OpenRouter’s GPT-4.0-Turbo for intelligent responses.
-* ⚡ **Modular Architecture** – Easily extend workflows with new tools.
+*  **Resume Parser** – Upload `.pdf` / `.docx` resumes, automatically extract structured data.
+*  **Summarization** – Generate concise summaries of extracted or scraped text from resumes.
+*  **Google Docs Integration** – Save parsed resumes directly into Google Docs.
+*  **Email Generation** – Automatically draft professional emails based on user input or workflow output.
+*  **Web Scraping Tool** – Extract and process website content for quick insights.
+*  **Chat Interface** – Interact with the assistant in real time.
+*  **LLM-powered Workflows** – Built using OpenRouter’s GPT-4.0-Turbo for intelligent responses.
+*  **Modular Architecture** – Easily extend workflows with new tools.
 
----
 
 ## 🏗️ Architecture
 
@@ -30,7 +26,7 @@ This project demonstrates how **AI agents** can be integrated with external APIs
 flowchart LR
     A[User] --> B[React Frontend]
     B --> C[FastAPI Backend]
-    C --> D[OpenRouter LLM (GPT-4.0 Turbo)]
+    C --> D[OpenRouter LLM GPT-4.0 Turbo]
     C --> E[Tools]
     E --> E1[Resume Parser]
     E --> E2[Summarizer]
@@ -43,8 +39,6 @@ flowchart LR
 * **Tools**: Resume Parser, Summarizer, Google Docs Writer, Email Generator, Web Scraper
 * **Workflow Engine**: LangChain / LangGraph Agents
 
----
-
 ## ⚙️ Tech Stack
 
 * **Frontend**: React, Axios, CSS
@@ -53,7 +47,6 @@ flowchart LR
 * **Tools**: Google Docs API, Web Scraping, Summarizer, Resume Parser, Email Generator
 * **Others**: LangChain, dotenv, pydantic
 
----
 
 ## 📂 Project Structure
 
@@ -82,8 +75,6 @@ ai-workflow-assistant/
 │
 └── README.md
 ```
-
----
 
 ## ⚡ Installation & Setup
 
@@ -125,7 +116,6 @@ npm install
 npm start
 ```
 
----
 
 ## 🚀 Usage
 
@@ -134,7 +124,6 @@ npm start
 * Upload a `.pdf` / `.docx` file → Assistant extracts + summarizes → Saves summary in **Google Docs**.
 * **Generate a professional email** draft directly from the assistant → Assistant outputs a formatted email you can copy or save.
 
----
 
 ## 📡 Deployment
 
@@ -144,34 +133,30 @@ npm start
 * Run ngrok → `ngrok http 8000`
 * Use the generated `https://xxxxx.ngrok-free.app` URL in your frontend `.env` or API config.
 
----
-
 ## ⚠️ Notes on ngrok
 
 * Every time you restart ngrok, you get a new URL unless you have a paid/static domain.
 * Make sure to update the frontend with the latest backend URL.
 * For production, deploy the backend on Render, Railway, or Docker on a VPS to avoid the ngrok dependency.
 
----
 
-## 📸 Demo Screenshots
+## Demo Screenshots
 
-* **Dashboard**
-  ![dashboard](./assets/dashboard.png)
+**Dashboard**  
+![dashboard](./assets/dashboard.png)
 
-* **Chat UI**
-  ![chat-ui](./assets/chatbot.png)
+**Chat UI**  
+![chat-ui](./assets/chatbot.png)
 
-* **Resume Parsing Workflow**
-  ![resume-workflow](./assets/resume.png)
+**Resume Parsing Workflow**  
+![resume-workflow](./assets/resume.png)
 
-* **Google Docs Output**
-  ![docs-output](./assets/ss1.jpg)
+**Google Docs Output**  
+![docs-output](./assets/ss1.jpg)
 
-* **Email Generator**
-  ![email-generation](./assets/email.png)
+**Email Generator**  
+![email-generation](./assets/email.png)
 
----
 
 ## 🚧 Future Improvements
 
@@ -181,5 +166,3 @@ npm start
 * Slack / Notion integration
 * Persistent memory with database
 * Multi-language support
-
----
